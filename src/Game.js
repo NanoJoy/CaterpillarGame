@@ -960,11 +960,13 @@ function GameState(game) {
                 for (i = 0; i < arrays.redDrags.length; i++) {
                     redDrag = arrays.redDrags[i];
                     game.physics.arcade.overlap(this.sprite, redDrag.sprite, function (playerSprite, redDragSprite) {
-                        this.curRedDrag = redDrag;
-                        this.curRedDrag.activated = true;
-                        playerSprite.body.position.setTo(redDragSprite.body.position.x, redDragSprite.body.position.y + redDragSprite.height);
-                        playerSprite.body.velocity.x = 5;
-                        playerSprite.body.gravity.y = gravityLevel * -1;
+                        if (!redDrag.done) {
+                            this.curRedDrag = redDrag;
+                            this.curRedDrag.activated = true;
+                            playerSprite.body.position.setTo(redDragSprite.body.position.x, redDragSprite.body.position.y + redDragSprite.height);
+                            playerSprite.body.velocity.x = 5;
+                            playerSprite.body.gravity.y = gravityLevel * -1;
+                        }
                     }, null, this);
                 }
             }
@@ -1049,6 +1051,7 @@ function GameState(game) {
             if (dropKey.isDown) {
                 this.curRedDrag.sprite.y = this.sprite.y - this.curRedDrag.sprite.height - 10;
                 this.curRedDrag.activated = false;
+                this.curRedDrag.flyAway();
                 this.curRedDrag = null;
                 this.sprite.body.gravity.y = 0;
             }
@@ -1351,7 +1354,6 @@ function GameState(game) {
         var SPEED_X = 100;
         var MAX_Y = 150;
         var INC_Y = 10;
-        console.log(x, y);
         this.sprite = groups.redDrags.create(x * 50, y * 50, "red_drag");
         game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = gravityLevel * -1;
@@ -1359,17 +1361,29 @@ function GameState(game) {
         this.sprite.play("fly");
         this.activated = false;
         this.blockedUp = false;
+        this.done = false;
         this.direction = direction;
+        this.sprite.scale.x = direction == "right" ? -1 : 1;
+        this.sprite.anchor.x = direction == "right" ? 0.5 : 1;
+        console.log(direction);
         this.update = function () {
             if (this.activated) {
-                game.physics.arcade.collide(this.sprite, groups.grounds);
+                var touchingGround = false;
+                game.physics.arcade.collide(this.sprite, groups.grounds, function (redDragSprite, groundSprite) {
+                    touchingGround = true;
+                }, null, this);
                 this.blockedUp = this.sprite.body.touching.up;
-                if (this.sprite.body.touching.right || this.sprite.body.touching.left) {
+                if ((this.sprite.body.touching.right || this.sprite.body.touching.left) && touchingGround) {
                     this.activated = false;
                     snail.curRedDrag = null;
-                    this.sprite.destroy();
+                    this.done = true;
+                    var destinationX = this.direction == "right" ? map.layouts[areaNumber][0].length * 50 : -1 * this.sprite.width;
+                    game.add.tween(this.sprite).to({ y: -100, x:  destinationX }, 2000, Phaser.Easing.Linear.None, true, 0);
+                    //this.sprite.destroy();
                 }
             }
+        };
+        this.flyAway = function () {
         };
     }
 
@@ -2186,12 +2200,7 @@ function GameState(game) {
         }
     }
 
-    this.create = function () {
-        var startArea = 0;
-        var tellToPause = null;
-        var timer = null;
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.physics.arcade.gravity.y = gravityLevel;
+    function addKeys() {
         cursors = game.input.keyboard.createCursorKeys();
         enterKey = game.input.keyboard.addKey(13);
         saveKey = game.input.keyboard.addKey(83);
@@ -2203,6 +2212,15 @@ function GameState(game) {
         shiftKey = game.input.keyboard.addKey(16);
         pauseKey = game.input.keyboard.addKey(80);
         dropKey = game.input.keyboard.addKey(68);
+    }
+
+    this.create = function () {
+        var startArea = 0;
+        var tellToPause = null;
+        var timer = null;
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.physics.arcade.gravity.y = gravityLevel;
+        addKeys();
         pauseKey.inputEnabled = true;
         pauseKey.onUp.add(pauseKeyPressed);
         saveKey.onDown.add(function () {

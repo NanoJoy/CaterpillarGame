@@ -1,4 +1,30 @@
 var responseTrees = {
+    jumpExplainer: {
+        directions: {
+            prompt: "I don't know where your milkweed patch is, but before you go anywhere you're gonna have to get out of Boingbug Town. Boingbug town was built inside this tree 50 years ago.",
+            options: [
+                {
+                    text: "That's fascinating! How does your economy work?",
+                    prompt: "directions"
+                }
+            ]
+        },
+        prompt: "Welcome to the Boingbug Town visitor center. Is there anything I can help you with?",
+        options: [
+            {
+                text: "Can you give me directions? I need to get back to my milkweed patch.",
+                prompt: "directions"
+            },
+            {
+                text: "What are those purple bugs behind you?",
+                prompt: "flutterpod"
+            },
+            {
+                text: "What do you have at this visitor center?",
+                prompt: "visitorCenter"
+            }
+        ]
+    },
     deer: {
         prompt: "If you don't have the ability to hide yet, I would go touch this leaf.",
         options: [

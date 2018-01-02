@@ -120,12 +120,28 @@ var Snail = {
     cleanMap: {
         layouts: [
             [
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'a', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'p', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'a', 'o', 'o', 'o', 'o', 'o', 'o', 'r', 'o', 'g'],
-                ['g', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', '!', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'j', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'z', 'z', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'o', 'o', 'o', 'o', 'i', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'j', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', '2', '2', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                ['g', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'j', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'g'],
+                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '@', '@', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g'],
+                ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 't', 'o', 'b', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'r', 'o', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', '2', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'z', 'z', 'z', 'z', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'i', 'o', 'i', 'o', 's', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', '#', 'o', '@', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
             ],
             [
                 ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
@@ -407,6 +423,7 @@ var Snail = {
         ],
         musics: ["game_music_1", null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
         dialogues: [
+            ["none", "none", "none", "none"],
             ["firstBoingbug"],
             ["blockExplainer"],
             [],
@@ -426,6 +443,6 @@ var Snail = {
         ],
         lampNames: [null, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
         powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-        redDragDirections: [["right", "left"]]
+        redDragDirections: [["right", "left", "right"]]
     }
 };
