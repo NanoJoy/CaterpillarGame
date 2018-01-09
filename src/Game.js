@@ -122,7 +122,7 @@ function GameState(game) {
             wasIn: false,
             inWater: false
         };
-        game.physics.arcade.enable(this.sprite);
+        game.physics.arcade.enable(this.sprite);    
 
         this.update = function () {
             var velX = 0;
@@ -836,6 +836,7 @@ function GameState(game) {
         this.inPain = false;
         this.jumping = false;
         this.curRedDrag = null;
+        var runningSpeed = 0;
         this.direction = 'right';
         this.isDragging = false;
         this.touchingGround = false;
@@ -1164,11 +1165,13 @@ function GameState(game) {
         this.aliveUpdate = function () {
             var MAXSPEED = 200;
             var ACCELERATION = 8;
-            var velocityX = this.sprite.body.velocity.x;
+            var velocityX = runningSpeed;
             var positionX = this.sprite.body.position.x;
             var absVelX = Math.abs(velocityX);
             var velXSign = velocityX / absVelX;
+
             this.sprite.body.gravity.y = 0;
+
             if (this.sprite.anchor.y === 1) {
                 this.sprite.body.rotation = 0;
                 if (this.sprite.anchor.x === 1) {
@@ -1187,24 +1190,45 @@ function GameState(game) {
             if (cursors.up.isDown && this.sprite.body.touching.down && !this.isDragging && !shiftKey.isDown) {
                 this.jumping = true;
             }
+
             if (cursors.right.isDown && !cursors.left.isDown && !shiftKey.isDown) {
-                if (this.sprite.body.velocity.x < MAXSPEED) {
-                    this.sprite.body.velocity.x += ACCELERATION;
-                }
+                runningSpeed = Math.min(runningSpeed + ACCELERATION, MAXSPEED);
             } else if (cursors.left.isDown && !cursors.right.isDown && !shiftKey.isDown) {
-                if (this.sprite.body.velocity.x > MAXSPEED * -1) {
-                    this.sprite.body.velocity.x -= ACCELERATION;
-                }
+                runningSpeed = Math.max(runningSpeed - ACCELERATION, -MAXSPEED)
+            } else if (Math.abs(velocityX) < 10) {
+                runningSpeed = 0;
             } else {
-                if (absVelX < 10) {
-                    this.sprite.body.velocity.x = 0;
-                } else {
-                    this.sprite.body.velocity.x -= velXSign * ACCELERATION;
-                }
+                runningSpeed -= velXSign * ACCELERATION;
             }
-            if (this.sprite.body.velocity.y > 200) {
-                this.sprite.body.velocity.y = 200;
+
+            var impartedVelocity = 0;
+            var onTop = function (playerSprite, otherSprite) {
+                return Math.floor(playerSprite.bottom) === otherSprite.top && otherSprite.body.velocity.x !== 0;
             }
+            game.physics.arcade.collide(this.sprite, groups.blocks, function (playerSprite, blockSprite) {
+                var friction = 1.0;
+                var difference = blockSprite.body.velocity.x - playerSprite.body.velocity.x;
+                console.log(difference);
+                impartedVelocity += difference * friction;
+            }, onTop, this);
+            for (var i = 0; i < arrays.speedBoosts.length; i++) {
+                var boost = arrays.speedBoosts[i];
+                game.physics.arcade.collide(this.sprite, boost.sprite, function (playerSprite, blockSprite) {
+                    var vel = boost.direction === "left" ? -5 : 5;
+                    impartedVelocity += vel;
+                }, onTop, this);
+            }
+
+            this.sprite.body.velocity.x = runningSpeed + impartedVelocity;
+            if (impartedVelocity > 0) {
+                console.log({
+                    runningSpeed: runningSpeed,
+                    impartedVelocity: impartedVelocity,
+                    overall: this.sprite.body.velocity.x
+                });
+            }
+
+            this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, MAXSPEED);
             if (velocityX === 0) {
                 this.sprite.play('idle_' + this.direction);
             } else if (this.direction === 'right' && velocityX < 0) {
@@ -1687,8 +1711,8 @@ function GameState(game) {
             ground_top_1: [0, 1, 2, 3, 4],
             ground_top_2: [0, 1, 2, 3, 4],
             ground_bottom: [5, 6, 7, 8, 9],
-            ground_top_left: [10, 11, 12, 13, 14],
-            ground_top_right: [15, 16, 17, 18, 19],
+            ground_top_left: [15, 16, 17, 18, 19],
+            ground_top_right: [10, 11, 12, 13, 14],
             ground_both_left: [20, 21, 22, 23, 24],
             ground_both_right: [25, 26, 27, 28, 29],
             ground_top_both: [30, 31, 32, 33, 34],
@@ -2289,11 +2313,6 @@ function GameState(game) {
             keyCounters.ammo = new CountDisplay(90, 10, "flower_bullet", Snail.file.ammo || 0);
         }
         game.sound.play(Snail.cleanMap.musics[areaNumber], 1, true);
-        if (areaNumber === 0) {
-            tellToPause = game.add.text(Snail.GAME_WIDTH / 2, Snail.GAME_HEIGHT / 2, "Press P to pause", { font: "16px VT323", fill: "white" });
-            tellToPause.anchor.setTo(0.5, 0.5);
-            timer = game.add.tween(tellToPause).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true, 3000);
-        }
     };
 
     this.update = function () {
