@@ -826,6 +826,7 @@ function GameState(game) {
         var wasTouching = false;
         var curRamp = null;
         var curBoost = null;
+        var boostSpeed = 0;
         var rampEntrySpeed = 0;
         this.sliding = false;
         this.slipping = false;
@@ -884,18 +885,22 @@ function GameState(game) {
             var speedBoost = null;
             var redDrag = null;
             curBoost = null;
-            // for (var i = 0; i < arrays.speedBoosts.length; i++) {
-            //     speedBoost = arrays.speedBoosts[i];
-            //     game.physics.arcade.collide(this.sprite, speedBoost.sprite, function (playerSprite, speedSprite) {
-            //         curBoost = speedBoost;
-            //     }, null, this);
-            // }
+            arrays.speedBoosts.forEach(function (boost) {
+                var collided = false;
+                game.physics.arcade.collide(snail.sprite, boost.sprite, function (playerSprite, blockSprite) {
+                    if (Math.floor(playerSprite.bottom) === blockSprite.top && !curBoost) {
+                        curBoost = boost
+                    }
+                }, null, this);
+            });
             this.touchingGround = false;
-            game.physics.arcade.overlap(this.sprite, groups.grounds, function (playerSprite, groundSprite) {
+            var groundTouch = function (playerSprite, groundSprite) {
+                console.log("groundTouch");
                 if (groundSprite.key.indexOf("top") !== -1 || groundSprite.key.indexOf("d_both") !== -1) {
                     this.touchingGround = true;
                 }
-            }, null, this);
+            };
+            game.physics.arcade.overlap(this.sprite, groups.grounds, groundTouch, null, this);
             game.physics.arcade.collide(this.sprite, groups.bridges);
             game.physics.arcade.collide(this.sprite, groups.softGrounds, function () {
                 this.touchingGround = true;
@@ -904,11 +909,7 @@ function GameState(game) {
                 spike = arrays.spikes[i];
                 game.physics.arcade.collide(this.sprite, spike.sprite, spike.playerTouch, null, spike);
             }
-            game.physics.arcade.collide(this.sprite, groups.grounds, function (playerSprite, groundSprite) {
-                if (groundSprite.key.indexOf("top") !== -1 || groundSprite.key.indexOf("d_both") !== -1) {
-                    this.touchingGround = true;
-                }
-            }, null, this);
+            game.physics.arcade.collide(this.sprite, groups.grounds, groundTouch, null, this);
             this.water.wasIn = false;
             for (i = 0; i < arrays.waters.length; i++) {
                 water = arrays.waters[i];
@@ -1215,23 +1216,17 @@ function GameState(game) {
                     runningSpeed = 0;
                 }
             }, onTop, this);
-            var boosting = false;
-            arrays.speedBoosts.forEach(function (boost) {
-                var collided = false;
-                game.physics.arcade.collide(snail.sprite, boost.sprite, function (playerSprite, blockSprite) {
-                    if (Math.floor(playerSprite.bottom) === blockSprite.top && !boosting) {
-                        collided = true;
-                        var multiplier = boost.direction === "left" ? -1 : 1;                   
-                        boost.amount = boost.amount === 0 ? 15 * multiplier : boost.amount + 5 * multiplier;
-                        impartedVelocity += boost.amount;
-                    }
-                }, null, this);
-                if (!collided) {
-                    boost.amount = 0;
-                }
-            });
+            if (curBoost) {
+                runningSpeed = 0;
+                boostSpeed = Math.min(boostSpeed + 100, 500);
+            } else if (this.sprite.body.velocity.x === 0) {
+                boostSpeed = 0;
+            } else {
+                var amount = this.touchingGround ? -10 : -2;
+                boostSpeed += amount * Math.sign(boostSpeed);
+            }
 
-            this.sprite.body.velocity.x = runningSpeed + impartedVelocity;
+            this.sprite.body.velocity.x = runningSpeed + impartedVelocity + boostSpeed;
 
             this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, MAXSPEED);
             if (velocityX === 0) {
