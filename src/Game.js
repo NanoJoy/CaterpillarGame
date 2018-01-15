@@ -161,8 +161,9 @@ function GameState(game) {
                     this.sprite.body.velocity.x = snail.sprite.body.velocity.x;
                 }
             }
+            var sprite = this.sprite;
             collidesWith.forEach(function (group) {
-                game.physics.arcade.collide(this.sprite, group);
+                game.physics.arcade.collide(sprite, group);
             });
             velX = this.sprite.body.velocity.x;
             absVelX = Math.abs(velX);
@@ -893,7 +894,6 @@ function GameState(game) {
             });
             this.touchingGround = false;
             var groundTouch = function (playerSprite, groundSprite) {
-                console.log("groundTouch");
                 if (groundSprite.key.indexOf("top") !== -1 || groundSprite.key.indexOf("d_both") !== -1) {
                     this.touchingGround = true;
                 }
@@ -1015,7 +1015,6 @@ function GameState(game) {
             const MAX_SPEED_Y = 150;
             const INCREMENT_X = 5;
             const INCREMENT_Y = 10;
-            console.log(this.curRedDrag.direction);
             const SIGN_X = this.curRedDrag.direction === "right" ? 1 : -1;
             if (this.shooting.canShoot && shootKey.isDown && !this.shooting.wasDown) {
                 this.shoot();
@@ -1069,7 +1068,6 @@ function GameState(game) {
                 if (Math.abs(this.sprite.body.velocity.x) < MAX_SPEED) {
                     this.sprite.body.velocity.x -= BOOST_LEVEL * MULTIPLIER;
                 } else {
-                    console.log("hello");
                     this.sprite.body.velocity.x = MAX_SPEED * MULTIPLIER * -1;
                 }
             }
@@ -1105,7 +1103,6 @@ function GameState(game) {
             if (this.sprite.anchor.y === 0) {
                 this.sprite.anchor.setTo(curRamp.direction === "nw" ? 1 : 0, 1);
                 if (!curRamp.isBottom) {
-                    console.log("here");
                     this.sprite.rotation = Math.PI / -4 * MULTIPLIER;
                 }
                 if (curRamp.direction === "nw") {
@@ -1387,7 +1384,6 @@ function GameState(game) {
         this.direction = direction;
         this.sprite.scale.x = direction == "right" ? -1 : 1;
         this.sprite.anchor.x = direction == "right" ? 0.5 : 1;
-        console.log(direction);
         this.update = function () {
             if (this.activated) {
                 var touchingGround = false;
