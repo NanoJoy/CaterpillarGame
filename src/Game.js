@@ -122,7 +122,9 @@ function GameState(game) {
             wasIn: false,
             inWater: false
         };
-        game.physics.arcade.enable(this.sprite);    
+        game.physics.arcade.enable(this.sprite);
+        var collidesWith = [groups.blocks, groups.grounds, groups.cleargrounds, groups.locks,
+             groups.spikess, groups.speedBoosts];  
 
         this.update = function () {
             var velX = 0;
@@ -159,16 +161,12 @@ function GameState(game) {
                     this.sprite.body.velocity.x = snail.sprite.body.velocity.x;
                 }
             }
-            game.physics.arcade.collide(this.sprite, groups.blocks);
-            groundSprites = [];
-            game.physics.arcade.collide(this.sprite, groups.grounds);
-            lastGroundSprite = groundSprites[groundSprites.length - 1];
-            game.physics.arcade.collide(this.sprite, groups.cleargrounds);
-            game.physics.arcade.collide(this.sprite, groups.locks);
-            game.physics.arcade.collide(this.sprite, groups.spikess);
+            collidesWith.forEach(function (group) {
+                game.physics.arcade.collide(this.sprite, group);
+            });
             velX = this.sprite.body.velocity.x;
             absVelX = Math.abs(velX);
-            velXSign = velX / absVelX;
+            velXSign = Math.sign(velX);
             if (this.sprite.body.touching.down) {
                 dragSound.volume = absVelX / 200;
                 if (!dragSound.isPlaying && absVelX > 0) {
