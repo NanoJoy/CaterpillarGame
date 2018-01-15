@@ -1195,7 +1195,7 @@ function GameState(game) {
                 runningSpeed = Math.min(runningSpeed + ACCELERATION, MAXSPEED);
             } else if (cursors.left.isDown && !cursors.right.isDown && !shiftKey.isDown) {
                 runningSpeed = Math.max(runningSpeed - ACCELERATION, -MAXSPEED)
-            } else if (Math.abs(velocityX) < 10) {
+            } else if (Math.abs(runningSpeed) < 10) {
                 runningSpeed = 0;
             } else {
                 runningSpeed -= velXSign * ACCELERATION;
@@ -1206,10 +1206,14 @@ function GameState(game) {
                 return Math.floor(playerSprite.bottom) === otherSprite.top && otherSprite.body.velocity.x !== 0;
             }
             game.physics.arcade.collide(this.sprite, groups.blocks, function (playerSprite, blockSprite) {
-                var friction = 1.0;
-                var difference = blockSprite.body.velocity.x - playerSprite.body.velocity.x;
-                console.log(difference);
-                impartedVelocity += difference * friction;
+                var friction = 1.0,
+                    blockVel = blockSprite.body.velocity.x,
+                    playerVel = playerSprite.body.velocity.x;
+                impartedVelocity += blockVel;
+                var directionButton = runningSpeed < 0 ? cursors.left : cursors.right;
+                if (!directionButton.isDown) {
+                    runningSpeed = 0;
+                }
             }, onTop, this);
             var boosting = false;
             arrays.speedBoosts.forEach(function (boost) {
@@ -1228,13 +1232,6 @@ function GameState(game) {
             });
 
             this.sprite.body.velocity.x = runningSpeed + impartedVelocity;
-            if (impartedVelocity > 0) {
-                console.log({
-                    runningSpeed: runningSpeed,
-                    impartedVelocity: impartedVelocity,
-                    overall: this.sprite.body.velocity.x
-                });
-            }
 
             this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, MAXSPEED);
             if (velocityX === 0) {
