@@ -22,17 +22,17 @@ var SaveState = function (game) {
         down: null,
         enter: null
     }
-    
+
     function Button(y, text) {
         var TINT_COLOR = "#8c8c8c";
         var WHITE = "#3cc60c";
-        var displayText = game.add.text(0, 0, text, {fill: WHITE, stroke: "#000000", strokeThickness: 2, font: "30px VT323"});
+        var displayText = game.add.text(0, 0, text, { fill: WHITE, stroke: "#000000", strokeThickness: 2, font: "30px VT323" });
         var that = this;
         displayText.y = y - displayText.height / 2;
         displayText.x = (Snail.GAME_WIDTH - displayText.width) / 2;
         displayText.inputEnabled = true;
         displayText.events.onInputDown.add(enterPressed);
-        this.select = function() {
+        this.select = function () {
             var f = displayText.style;
             f.fill = WHITE;
             displayText.setStyle(f);
@@ -44,7 +44,7 @@ var SaveState = function (game) {
             selectedButton = that;
             game.sound.play("menu_beep");
         };
-        this.unselect = function() {
+        this.unselect = function () {
             var f = displayText.style;
             f.fill = TINT_COLOR;
             displayText.setStyle(f);
@@ -53,21 +53,26 @@ var SaveState = function (game) {
         displayText.events.onInputOut.add(this.unselect);
         displayText.events.onInputDown.add(enterPressed);
     }
-    
+
     function enterPressed() {
         console.log(newGameButton);
-       if (currentStorage === null || selectedButton === newGameButton) {
-           Snail.file = file;
-       } else {
-           Snail.file = JSON.parse(currentStorage);
-       }
-       Snail.areaNumber = Snail.cleanMap.lampNames.indexOf(Snail.file.lampName);
-       if (Snail.areaNumber === -1) {
-           Snail.areaNumber = 0;
-       }
-       game.state.start("Midload");
+        if (currentStorage === null || selectedButton === newGameButton) {
+            Snail.file = file;
+        } else {
+            Snail.file = JSON.parse(currentStorage);
+        }
+        Snail.areaNumber = Snail.cleanMap.lampNames.indexOf(Snail.file.lampName);
+        if (Snail.areaNumber === -1) {
+            Snail.areaNumber = 0;
+        }
+        if (selectedButton === newGameButton) {
+            game.state.start("Intro");
+        } else {
+
+            game.state.start("Midload");
+        }
     }
-    
+
     function upOrDownPressed() {
         if (selectedButton === newGameButton) {
             newGameButton.unselect();
@@ -79,8 +84,8 @@ var SaveState = function (game) {
             selectedButton = newGameButton;
         }
     }
-    
-    this.create = function() {
+
+    this.create = function () {
         currentStorage = localStorage.getItem("CaterpillarGame");
         background = game.add.tileSprite(0, 0, Snail.GAME_WIDTH, Snail.GAME_HEIGHT, "menu_background");
         background.tint = 0xc6c6c6;
@@ -103,7 +108,7 @@ var SaveState = function (game) {
         keys.enter.onDown.add(enterPressed);
         game.sound.play("menu_music", 1, true);
     };
-    
+
     this.update = function () {
         background.tilePosition.y -= 0.25;
     };
