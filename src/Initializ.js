@@ -1,449 +1,451 @@
-var Snail = {
-    GAME_WIDTH: 800,
-    GAME_HEIGHT: 450,
-    areaNumber: -1,
-    level: null,
-    tempSave: null,
-    loadedMusics: [],
-    musicTime: 0,
-    centerThing: function (thing) {
-        thing.x = this.GAME_WIDTH / 2 - thing.width / 2;
-        thing.y = this.GAME_HEIGHT / 2 - thing.height / 2;
-    },
-    getGroundKey: function (x, y, levelLayout) {
-        var coverString = "gz<>c7890{}";
-        var key = "ground";
-        var sides = {
-            top: false,
-            bottom: false,
-            right: false,
-            left: false
-        };
-        if (y !== 0 && coverString.indexOf(levelLayout[y - 1][x]) === -1) {
-            sides.top = true;
-        }
-        if (y !== levelLayout.length - 1 && coverString.indexOf(levelLayout[y + 1][x]) === -1) {
-            sides.bottom = true;
-        }
-        if (x !== 0 && coverString.indexOf(levelLayout[y][x - 1]) === -1) {
-            sides.left = true;
-        }
-        if (x !== levelLayout[y].length - 1 && coverString.indexOf(levelLayout[y][x + 1]) === -1) {
-            sides.right = true;
-        }
-        if (sides.top && sides.bottom) {
-            key += "_both";
-        } else if (sides.top) {
-            key += "_top";
-        } else if (sides.bottom) {
-            key += "_bottom";
-        }
-        if (key === "ground") {
-            key += "_inside";
-        }
-        if (sides.left && sides.right) {
-            key += "_both";
-        } else if (sides.left) {
-            key += "_left";
-        } else if (sides.right) {
-            key += "_right";
-        }
-        if (key === "ground_top") {
-            key += "_" + (Math.floor(Math.random() * 2) + 1);
-        }
-        return key;
-    },
-    getSpikesKey: function (x, y, levelLayout) {
-        var coverString = "gz<>c";
-        var key = "spikes";
-        var sides = {
-            left: false,
-            right: false
-        };
-        if (y !== levelLayout.length - 1 && coverString.indexOf(levelLayout[y + 1][x]) === -1) {
-            key += "_bottom";
-        }
-        if (x !== 0 && coverString.indexOf(levelLayout[y][x - 1]) === -1) {
-            sides.left = true;
-        }
-        if (x !== levelLayout[0].length - 1 && coverString.indexOf(levelLayout[y][x + 1]) === -1) {
-            sides.right = true;
-        }
-        if (sides.left && sides.right) {
-            key += "_both";
-        } else if (sides.left) {
-            key += "_left";
-        } else if (sides.right) {
-            key += "_right";
-        }
-        return key;
-    },
-    makeAnimationArray: function (start, end, rewind) {
-        var arr = [];
-        var i;
-        for (i = start; i <= end; i += 1) {
-            arr.push(i);
-        }
-        if (rewind) {
-            for (i = end - 1; i > start; i -= 1) {
+function Initialize() {
+    return {
+        GAME_WIDTH: 800,
+        GAME_HEIGHT: 450,
+        areaNumber: -1,
+        level: null,
+        tempSave: null,
+        loadedMusics: [],
+        musicTime: 0,
+        centerThing: function (thing) {
+            thing.x = this.GAME_WIDTH / 2 - thing.width / 2;
+            thing.y = this.GAME_HEIGHT / 2 - thing.height / 2;
+        },
+        getGroundKey: function (x, y, levelLayout) {
+            var coverString = "gz<>c7890{}";
+            var key = "ground";
+            var sides = {
+                top: false,
+                bottom: false,
+                right: false,
+                left: false
+            };
+            if (y !== 0 && coverString.indexOf(levelLayout[y - 1][x]) === -1) {
+                sides.top = true;
+            }
+            if (y !== levelLayout.length - 1 && coverString.indexOf(levelLayout[y + 1][x]) === -1) {
+                sides.bottom = true;
+            }
+            if (x !== 0 && coverString.indexOf(levelLayout[y][x - 1]) === -1) {
+                sides.left = true;
+            }
+            if (x !== levelLayout[y].length - 1 && coverString.indexOf(levelLayout[y][x + 1]) === -1) {
+                sides.right = true;
+            }
+            if (sides.top && sides.bottom) {
+                key += "_both";
+            } else if (sides.top) {
+                key += "_top";
+            } else if (sides.bottom) {
+                key += "_bottom";
+            }
+            if (key === "ground") {
+                key += "_inside";
+            }
+            if (sides.left && sides.right) {
+                key += "_both";
+            } else if (sides.left) {
+                key += "_left";
+            } else if (sides.right) {
+                key += "_right";
+            }
+            if (key === "ground_top") {
+                key += "_" + (Math.floor(Math.random() * 2) + 1);
+            }
+            return key;
+        },
+        getSpikesKey: function (x, y, levelLayout) {
+            var coverString = "gz<>c";
+            var key = "spikes";
+            var sides = {
+                left: false,
+                right: false
+            };
+            if (y !== levelLayout.length - 1 && coverString.indexOf(levelLayout[y + 1][x]) === -1) {
+                key += "_bottom";
+            }
+            if (x !== 0 && coverString.indexOf(levelLayout[y][x - 1]) === -1) {
+                sides.left = true;
+            }
+            if (x !== levelLayout[0].length - 1 && coverString.indexOf(levelLayout[y][x + 1]) === -1) {
+                sides.right = true;
+            }
+            if (sides.left && sides.right) {
+                key += "_both";
+            } else if (sides.left) {
+                key += "_left";
+            } else if (sides.right) {
+                key += "_right";
+            }
+            return key;
+        },
+        makeAnimationArray: function (start, end, rewind) {
+            var arr = [];
+            var i;
+            for (i = start; i <= end; i += 1) {
                 arr.push(i);
             }
-        }
-        return arr;
-    },
-    getSpriteCenter: function (sprite) {
-        return {
-            x: sprite.x + sprite.width / 2,
-            y: sprite.y + sprite.height / 2
-        };
-    },
-    removeFromLevel: function (map, areaNumber, thing, fileMap) {
-        map.layouts[areaNumber][thing.location[0]][thing.location[1]] = 'o';
-        fileMap.push({
-            a: areaNumber,
-            x: thing.location[1],
-            y: thing.location[0]
-        });
-    },
-    textStyles: {
-        boingbox: {
-            font: '18px VT323',
-            fill: 'white',
-            align: 'left'
+            if (rewind) {
+                for (i = end - 1; i > start; i -= 1) {
+                    arr.push(i);
+                }
+            }
+            return arr;
         },
-        loadText: {
-            font: '20px VT323',
-            fill: 'white',
-            align: 'center'
+        getSpriteCenter: function (sprite) {
+            return {
+                x: sprite.x + sprite.width / 2,
+                y: sprite.y + sprite.height / 2
+            };
+        },
+        removeFromLevel: function (map, areaNumber, thing, fileMap) {
+            map.layouts[areaNumber][thing.location[0]][thing.location[1]] = 'o';
+            fileMap.push({
+                a: areaNumber,
+                x: thing.location[1],
+                y: thing.location[0]
+            });
+        },
+        textStyles: {
+            boingbox: {
+                font: '18px VT323',
+                fill: 'white',
+                align: 'left'
+            },
+            loadText: {
+                font: '20px VT323',
+                fill: 'white',
+                align: 'center'
+            }
+        },
+        cleanMap: {
+            layouts: [
+                // [
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', '!', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'j', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'z', 'z', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'o', 'o', 'o', 'o', 'i', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'j', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', '2', '2', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                //     ['g', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'j', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '@', '@', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 't', 'o', 'b', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'r', 'o', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', '2', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'z', 'z', 'z', 'z', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'i', 'o', 'i', 'o', 's', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', '#', 'o', '@', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                // ],
+                // [
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', '8', 'o', 'o', 'o', 'o', 'r', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', '8', '8', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'i', 's', 'o', 'i', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', '}', '}', '}', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '2', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', '7', 'g', 'g', 'g', 'o', 'r', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'g', 'g', '>', '>', 'o', 'o', 'o', '7', '7', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', '7', '7', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'i', 's', 'o', 'i', '@', 'o', 'o', '7', '7', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                // ],
+                getLevelOne().layout,
+                [//0
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'p', 'p', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', '!', 'o', 'o', '.', '.', '.', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'l', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ],
+                [//1
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'l', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', '@', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', '2', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', '.', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', '!', 'o', 't', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//2
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'o', 'l', 'o', 'g', 'o', 'o', 'o', 'o', 'o', '!', 'g'],
+                    ['g', 'g', 'g', 'g', 'o', 'o', 'o', '@', 'o', 'o', 'o', '2', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 's', 'o', 'o', '.', 'o', '.', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'l', 'o', '#', 'o', 'o', 'o', 'o', 'o', 'l', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//3
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', '3', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'b', 'o', 't', 'o', 'o', 'o', 't', 'o', '!', 'l', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//4
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', '!', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', '2', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 't', 'b', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'o', '.', 'f', '.', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'l', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 's', 'o', 'o', '2', '@', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'g', 'g', 'z', 'z', 'z', 'g'],
+                ],
+                [//5
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', '!', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', 's', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', '#', '#', 'g', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'z', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', '3', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'z', 'o', 'o', 'o', 'g', '3', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '@', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                    ['g', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', '2', 'g', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'l', 'o', 'o', '@', 'l', 'g', 'o', 'o', 's', 's', 'o', 'o', '.', '.', '.', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//6
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', '!', 'b', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', '@', 's', '2', '@', 'o', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'g'],
+                    ['g', '2', 'o', 'o', 'o', 'o', 'o', 'o', '.', 'o', 'b', 'g', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'z', 'g'],
+                    ['g', 'g', 'g', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'z', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'l', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 't', 'o', 'z', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'o', 'p', 'o', 'o', '.', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//7
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g'],
+                    ['g', 'l', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'l', 'g'],
+                    ['g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'd', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', '@', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 's', '.', '.', '.', 'o', 'o', 'b', 's', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '<', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '>', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '!', 'o', 'f', 'g', '<', 'o', 'o', '2', 'g'],
+                    ['g', 'g', 'g', 'g', '>', '>', '>', '<', '<', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//8
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', '2', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'l', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '@', 'o', 'o', 'g', 'g'],
+                    ['g', 's', 's', 's', 's', 'o', 'b', 'b', 'd', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'd', '.', '.', '.', '#', 'o', 'g', 'g', 'o', 'o', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', 'g', 'g', 'o', 'o', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '<', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', 'd', 'o', '#', 'o', '!', 'o', '3', 'o', 'o', 'o', 'o', 'o', 'f', 'j', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//9
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'b', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', '#', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'd', 'o', 'o', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'd', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'o', 'o', 'p', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'f', 'o', 'o', 'g', 'l', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', '2', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'c', 'c', 'g', 'g', 'c', 'c', 'g', 'c', 'c', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'z', 'z', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'j', 'o', 'o', 'o', 'g'],
+                    ['g', '>', '>', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', '2', 'o', 'g', '>', '>', '>', '>', '>', '>', '>', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', '3', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '#', '@', 'j', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', '.', '.', 'j', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'd', 'o', 'o', '@', 'o', 'o', 'o', 's', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'j', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', '.', 's', '.', 'b', '.', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//10
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 's', 's', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'b', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'a', 'o', '!', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 's', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'a', 'a', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'g', 's', 's', 's', 's', 's', 's', 's', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'd', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'f', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'g'],
+                    ['g', 'o', 'o', 'g', 'w', 'w', 'w', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'd', 'o', 'j', 'g', 'g', 'g', 'g', 'd', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'g'],
+                    ['g', 'o', 'o', 'g', 'o', 'l', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'c', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'j', 'd', 'o', 'o', 'o', 'c', 'd', 'o', 'o', 'o', 'g'],
+                    ['g', 'w', 'w', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//11
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', '3', 'o', 'o', 'g'],
+                    ['g', 'o', '_', '_', '_', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'j', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'w', 'w', 'a', 'o', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'l', 'o', 'o', 'o', 'o', 'o', 'o', '@', 'w', 'w', 'w', 'w', 'w', 'o', 'o', 'g', 'o', 'o', '2', 'g'],
+                    ['g', 's', 'o', 's', 'o', 'b', 'o', 'o', 'g', 'w', 'w', 'w', 'w', 'w', 'o', 'o', 'g', 'd', 'o', 'a', 'g'],
+                    ['g', 'g', 'g', 'c', 'c', 'c', 'c', 'c', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'c', 'c', 'c', 'g'],
+                    ['g', 'g', 'g', '>', '>', '>', '>', '>', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', '#', 's', 'o', 'j', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '>', '>', '>', '>', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'g', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'g', 'a', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'o', 'd', 'o', 'i', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'l', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'o', 'd', 'o', 'o', 's', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                ],
+                [//12
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', '!', 'o', '(', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'o', '#', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'u', 'o', 'o', 'o', 'o', 'f', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'd', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'x', 'x', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'x', 'x', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'l', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'g', 'z', 'c', 'c', 'g', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g', '>', '>', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'x', 'x', 'x', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'j', 's', 'o', 'o', 'o', 's', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', '<', '<', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'w', 'w', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'i', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//13
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'l', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', '>', 'g', '<', 'g', 'g', '>', '>', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', '@', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'b', 'o', 'o', 'g', 'z', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'j', 'g', 'o', 'o', 'o', 'g', 'b', 'o', 'o', 'o', 'g', 'o', 'o', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'g', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', '2', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'd', 'o', 'o', 'o', 'o', 'o', 'o', '#', 'j', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'j', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'i', 's', 'j', '3', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'a', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '!', 'o', 'j', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ],
+                [//14
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', '2', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'g', 'g', 'g', 'o', 'o', 's', 's', 'o', 'i', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', 'o', 'b', 'a', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'o', 'o', '3', 'g', 'o', 'g', '>', '>', 'g', 'g', 'g', 'g', 'g', 'o', 's', 'o', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'c', 'c', '3', 'c', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'o', '#', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'w', 'w', 'o', 'o', 'o', '#', 'o', 'j', 'o', 'o', 'o', 'o', 'd', 'j', 'o', 'o', 'f', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'i', 'o', 'o', 'd', 'o', 's', 's', 'o', 'o', 'o', 'i', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
+                    ['g', 'g', 'o', 'o', 'd', 'o', '3', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'j', 'o', '@', 'o', 'o', 'o', 's', 'o', 's', 'o', 'o', 'i', 'o', 'o', 'o', 'g', 'j', 'o', 'o', 'o', '2', 'o', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'g', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', '<', '<', '<', '>', '>', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'w', 'w', 'w', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'w', 'w', 'w', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'a', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', '!', 'o', 'b', 'o', 'w', 'w', 'w', 'g', 'o', 'o', '#', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', 'i', 'b', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
+                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', '>', '<', '<', '<', 'g', '>', '>', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
+                ]
+            ],
+            leafPointers: [
+                [14],
+                [2],
+                [3, 4, 2],
+                [2],
+                [5],
+                [7, 6],
+                [7],
+                [6, 8],
+                [9],
+                [10],
+                [11],
+                [12, 13],
+                [11],
+                [14],
+                [15]
+            ],
+            musics: ["game_music_1", null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
+            dialogues: [
+                getLevelOne().dialogue,
+                ["firstBoingbug"],
+                ["blockExplainer"],
+                [],
+                ["spazzy", "stinkbugs"],
+                ["saves", "killStinkbug"],
+                ["behindDoor"],
+                ["orb"],
+                ["deer"],
+                ["placeholder"],
+                [],
+                [],
+                [],
+                [],
+                ['none', 'none', 'none', 'none', 'none'],
+                ['none', 'none', 'none', 'none', 'none'],
+                ['none', 'none', 'none', 'none', 'none']
+            ],
+            lampNames: [null, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
+            powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
+            redDragDirections: [["right", "left", "right"]]
         }
-    },
-    cleanMap: {
-        layouts: [
-            // [
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', '!', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'j', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'z', 'z', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'o', 'o', 'o', 'o', 'i', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'j', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', '2', '2', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-            //     ['g', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-            //     ['g', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'j', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '@', '@', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 't', 'o', 'b', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'r', 'o', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'o', 'r', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', '2', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'z', 'z', 'z', 'z', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'i', 'o', 'i', 'o', 's', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', '#', 'o', '@', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            // ],
-            // [
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', '8', 'o', 'o', 'o', 'o', 'r', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', '8', '8', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'i', 's', 'o', 'i', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', '}', '}', '}', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '2', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', '7', 'g', 'g', 'g', 'o', 'r', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'g', 'g', '>', '>', 'o', 'o', 'o', '7', '7', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', '7', '7', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'i', 's', 'o', 'i', '@', 'o', 'o', '7', '7', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            // ],
-            levelOneLayout,
-            [//0
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'p', 'p', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'o', '!', 'o', 'o', '.', '.', '.', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'l', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            ],
-            [//1
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'l', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'o', '@', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', '2', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', '.', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'g', 'o', '!', 'o', 't', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//2
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'o', 'l', 'o', 'g', 'o', 'o', 'o', 'o', 'o', '!', 'g'],
-                ['g', 'g', 'g', 'g', 'o', 'o', 'o', '@', 'o', 'o', 'o', '2', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 's', 'o', 'o', '.', 'o', '.', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'l', 'o', '#', 'o', 'o', 'o', 'o', 'o', 'l', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//3
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', '3', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'b', 'o', 't', 'o', 'o', 'o', 't', 'o', '!', 'l', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//4
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', '!', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', '2', 'o', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 't', 'b', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'o', '.', 'f', '.', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'l', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 's', 'o', 'o', '2', '@', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'g', 'g', 'z', 'z', 'z', 'g'],
-            ],
-            [//5
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', '!', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', 's', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', '#', '#', 'g', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'z', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', '3', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'z', 'o', 'o', 'o', 'g', '3', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '@', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-                ['g', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', '2', 'g', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'l', 'o', 'o', '@', 'l', 'g', 'o', 'o', 's', 's', 'o', 'o', '.', '.', '.', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//6
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', '!', 'b', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', '@', 's', '2', '@', 'o', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'g'],
-                ['g', '2', 'o', 'o', 'o', 'o', 'o', 'o', '.', 'o', 'b', 'g', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'z', 'g'],
-                ['g', 'g', 'g', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'z', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'l', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 't', 'o', 'z', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'o', 'p', 'o', 'o', '.', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//7
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g'],
-                ['g', 'l', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 't', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'l', 'g'],
-                ['g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'd', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g'],
-                ['g', 'o', 'o', 'o', '@', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 's', '.', '.', '.', 'o', 'o', 'b', 's', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '<', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '>', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '!', 'o', 'f', 'g', '<', 'o', 'o', '2', 'g'],
-                ['g', 'g', 'g', 'g', '>', '>', '>', '<', '<', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//8
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', '2', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'l', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '@', 'o', 'o', 'g', 'g'],
-                ['g', 's', 's', 's', 's', 'o', 'b', 'b', 'd', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'd', '.', '.', '.', '#', 'o', 'g', 'g', 'o', 'o', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', 'g', 'g', 'o', 'o', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '<', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', 'd', 'o', '#', 'o', '!', 'o', '3', 'o', 'o', 'o', 'o', 'o', 'f', 'j', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//9
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'b', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', '#', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'd', 'o', 'o', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'd', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'o', 'o', 'p', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'f', 'o', 'o', 'g', 'l', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', '2', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'c', 'c', 'g', 'g', 'c', 'c', 'g', 'c', 'c', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'z', 'z', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'j', 'o', 'o', 'o', 'g'],
-                ['g', '>', '>', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', '2', 'o', 'g', '>', '>', '>', '>', '>', '>', '>', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', '3', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '#', '@', 'j', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', '.', '.', 'j', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'd', 'o', 'o', '@', 'o', 'o', 'o', 's', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'j', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', '.', 's', '.', 'b', '.', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//10
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 's', 's', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'b', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'a', 'o', '!', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 's', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'a', 'a', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'g', 's', 's', 's', 's', 's', 's', 's', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'd', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'f', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'g'],
-                ['g', 'o', 'o', 'g', 'w', 'w', 'w', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'o', 'd', 'o', 'j', 'g', 'g', 'g', 'g', 'd', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'c', 'g'],
-                ['g', 'o', 'o', 'g', 'o', 'l', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'c', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'o', 'j', 'd', 'o', 'o', 'o', 'c', 'd', 'o', 'o', 'o', 'g'],
-                ['g', 'w', 'w', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//11
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', '!', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', '3', 'o', 'o', 'g'],
-                ['g', 'o', '_', '_', '_', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'j', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'w', 'w', 'a', 'o', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'l', 'o', 'o', 'o', 'o', 'o', 'o', '@', 'w', 'w', 'w', 'w', 'w', 'o', 'o', 'g', 'o', 'o', '2', 'g'],
-                ['g', 's', 'o', 's', 'o', 'b', 'o', 'o', 'g', 'w', 'w', 'w', 'w', 'w', 'o', 'o', 'g', 'd', 'o', 'a', 'g'],
-                ['g', 'g', 'g', 'c', 'c', 'c', 'c', 'c', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'c', 'c', 'c', 'g'],
-                ['g', 'g', 'g', '>', '>', '>', '>', '>', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', '#', 's', 'o', 'j', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '>', '>', '>', '>', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'g', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'g', 'a', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'o', 'd', 'o', 'i', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'l', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'o', 'd', 'o', 'o', 's', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-            ],
-            [//12
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', '!', 'o', '(', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'o', '#', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'u', 'o', 'o', 'o', 'o', 'f', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'd', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'x', 'x', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'x', 'x', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'g', 'g', 'g', 'g', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'l', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'g', 'z', 'c', 'c', 'g', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'g', '>', '>', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'x', 'x', 'x', 'g', 'g', 'g', 'g'],
-                ['g', 'o', 'o', 'o', 'o', 'g', 'g', 'j', 's', 'o', 'o', 'o', 's', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', '<', '<', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'w', 'w', 'o', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'i', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'z', 'z', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//13
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'l', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', '>', 'g', '<', 'g', 'g', '>', '>', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', '@', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'b', 'o', 'o', 'g', 'z', 'z', 'z', 'z', 'z', 'z', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'j', 'g', 'o', 'o', 'o', 'g', 'b', 'o', 'o', 'o', 'g', 'o', 'o', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'g', 'z', 'z', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', '2', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'd', 'o', 'o', 'o', 'o', 'o', 'o', '#', 'j', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'j', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'i', 's', 'j', '3', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'a', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '!', 'o', 'j', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ],
-            [//14
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', '2', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'c', 'c', 'c', 'g', 'g', 'g', 'o', 'o', 's', 's', 'o', 'i', 'b', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', 'o', 'b', 'a', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'o', 'o', '3', 'g', 'o', 'g', '>', '>', 'g', 'g', 'g', 'g', 'g', 'o', 's', 'o', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'c', 'c', '3', 'c', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'o', '#', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', '3', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'w', 'w', 'o', 'o', 'o', '#', 'o', 'j', 'o', 'o', 'o', 'o', 'd', 'j', 'o', 'o', 'f', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'o', 'o', 'o', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'i', 'o', 'o', 'd', 'o', 's', 's', 'o', 'o', 'o', 'i', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'g'],
-                ['g', 'g', 'o', 'o', 'd', 'o', '3', 'g', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'j', 'o', '@', 'o', 'o', 'o', 's', 'o', 's', 'o', 'o', 'i', 'o', 'o', 'o', 'g', 'j', 'o', 'o', 'o', '2', 'o', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'g', 'c', 'c', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'g', 'g', 'g', 'g', '<', '<', '<', '>', '>', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w', 'w', 'w', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'w', 'w', 'w', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 'w', 'w', 'w', 'g', 'o', 'o', 'g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'a', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', '!', 'o', 'b', 'o', 'w', 'w', 'w', 'g', 'o', 'o', '#', 'o', 'o', 'o', 'o', 'o', 's', 'o', 'o', 'i', 'b', 'o', 'w', 'w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', '>', '>', '<', '<', '<', 'g', '>', '>', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
-            ]
-        ],
-        leafPointers: [
-            [14],
-            [2],
-            [3, 4, 2],
-            [2],
-            [5],
-            [7, 6],
-            [7],
-            [6, 8],
-            [9],
-            [10],
-            [11],
-            [12, 13],
-            [11],
-            [14],
-            [15]
-        ],
-        musics: ["game_music_1", null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
-        dialogues: [
-            ["none", "none", "none", "none"],
-            ["firstBoingbug"],
-            ["blockExplainer"],
-            [],
-            ["spazzy", "stinkbugs"],
-            ["saves", "killStinkbug"],
-            ["behindDoor"],
-            ["orb"],
-            ["deer"],
-            ["placeholder"],
-            [],
-            [],
-            [],
-            [],
-            ['none', 'none', 'none', 'none', 'none'],
-            ['none', 'none', 'none', 'none', 'none'],
-            ['none', 'none', 'none', 'none', 'none']
-        ],
-        lampNames: [null, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
-        powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-        redDragDirections: [["right", "left", "right"]]
     }
 };

@@ -1,4 +1,5 @@
 var States = window.States || {};
+var Snail = window.Snail || Initialize();
 function GameState(game) {
     var fileMap = null;
     var background = null;
@@ -38,6 +39,7 @@ function GameState(game) {
     var startTime = 0;
     var areaNumber = 0;
     var gravityLevel = 300;
+    game.gravityLevel = gravityLevel;
     var groups = {
         ammos: null,
         blocks: null,
@@ -68,6 +70,7 @@ function GameState(game) {
         waters: null,
         worms: null
     };
+    game.groups = groups;
     var arrays = {
         ammos: [],
         blocks: [],
@@ -206,39 +209,6 @@ function GameState(game) {
             if (!this.water.wasIn) {
                 this.water.inWater = false;
             }
-        };
-    }
-
-    function Boingbug(x, y, dialogueNumber) {
-        var boxShown = false;
-        this.sprite = groups.boingbugs.create(x, y, "boing");
-        this.sprite.x += this.sprite.width / 2;
-        this.sprite.anchor.setTo(0.5, 0);
-        this.sprite.animations.add('shimmy', [0, 1], 8, true);
-        this.sprite.play('shimmy');
-        this.dialogue = map.dialogues[areaNumber][dialogueNumber];
-        this.textbox = { showing: false };
-
-        game.physics.arcade.enable(this.sprite);
-        this.sprite.body.gravity = gravityLevel * -1;
-
-        this.update = function () {
-            game.physics.arcade.overlap(this.sprite, snail.sprite, function (boingbugSprite, playerSprite) {
-                if (this.dialogue !== "none" && !this.textbox.showing && (!boxShown || boingbugKey.isDown)) {
-                    game.sound.play("boingbug");
-                    this.textbox = new ResponseBox(responseTrees[this.dialogue], this);
-                    boxShown = true;
-                }
-            }, null, this);
-            if (this.sprite.scale.x === 1 && Snail.getSpriteCenter(this.sprite).x < Snail.getSpriteCenter(snail.sprite).x) {
-                this.sprite.scale.x *= -1;
-            } else if (this.sprite.scale.x === -1 && Snail.getSpriteCenter(this.sprite).x > Snail.getSpriteCenter(snail.sprite).x) {
-                this.sprite.scale.x *= -1;
-            }
-        };
-        this.boxDone = function () {
-            boxShown = true;
-            this.textbox.showing = false;
         };
     }
 
@@ -1610,87 +1580,6 @@ function GameState(game) {
 
     }
 
-    function ResponseBox(diTree, parent) {
-        var TRANSPARENCY = 0.9;
-        var MARGIN_X = 30;
-        var MARGIN_Y = 30;
-        var OPTION_SPACING = 20;
-        var origTree = JSON.parse(JSON.stringify(diTree));
-        var backSprite = game.add.sprite(0, 0, 'text_back');
-        var prompt = game.add.text(MARGIN_X, MARGIN_Y, diTree.prompt, Snail.textStyles.boingbox);
-        var helper = game.add.text((Snail.GAME_WIDTH / 2) + game.camera.x, Snail.GAME_HEIGHT + game.camera.y - MARGIN_Y - 30,
-            "Use UP and DOWN to move cursor, ENTER to choose", Snail.textStyles.boingbox);
-        var numOptions = diTree.options.length;
-        var selectedOption = 0;
-        var options = [];
-        this.showing = true;
-        game.physics.arcade.isPaused = true;
-        pauseAnimations(true);
-        backSprite.fixedToCamera = true;
-        backSprite.alpha = TRANSPARENCY;
-        prompt.fixedToCamera = true;
-        prompt.wordWrap = true;
-        prompt.wordWrapWidth = Snail.GAME_WIDTH - MARGIN_X * 2;
-        helper.anchor.x = 0.5;
-        for (var i = 0; i < numOptions; i++) {
-            options.push(game.add.text(prompt.x + 20, prompt.bottom + (OPTION_SPACING * (i + 1)), diTree.options[i].text, Snail.textStyles.boingbox));
-            options[i].fixedToCamera = true;
-        }
-        var textPointer = game.add.sprite(game.camera.x + prompt.x, prompt.bottom + OPTION_SPACING + game.camera.y, 'text_pointer');
-        cursors.down.onDown.add(function () {
-            if (selectedOption < numOptions - 1) {
-                textPointer.y += OPTION_SPACING;
-                selectedOption++;
-                game.sound.play("menu_beep");
-            }
-        });
-        cursors.up.onDown.add(function () {
-            if (selectedOption > 0) {
-                textPointer.y -= OPTION_SPACING;
-                selectedOption--;
-                game.sound.play("menu_beep");
-            }
-        });
-        enterKey.onDown.add(function () {
-            if (diTree.options[selectedOption].tree === "DONE") {
-                game.physics.arcade.isPaused = false;
-                pauseAnimations(false);
-                backSprite.destroy();
-                prompt.destroy();
-                helper.destroy();
-                for (i = 0; i < options.length; i++) {
-                    options[i].destroy();
-                }
-                textPointer.destroy();
-                cursors.up.onDown.removeAll();
-                cursors.down.onDown.removeAll();
-                enterKey.onDown.removeAll();
-                this.showing = false;
-                diTree = origTree;
-                parent.boxDone(diTree.options[selectedOption].text);
-            } else {
-                game.sound.play("menu_beep");
-                for (i = 0; i < options.length; i++) {
-                    options[i].destroy();
-                }
-                diTree = diTree.options[selectedOption].tree;
-                if (typeof diTree === "string") {
-                    diTree = origTree[diTree];
-                }
-                prompt.text = diTree.prompt;
-                options = [];
-                numOptions = diTree.options.length;
-                for (var i = 0; i < numOptions; i++) {
-                    options.push(game.add.text(prompt.x - game.camera.x + 20, prompt.bottom + (OPTION_SPACING * (i + 1)), diTree.options[i].text, Snail.textStyles.boingbox));
-                    options[i].fixedToCamera = true;
-                }
-                selectedOption = 0;
-                textPointer.y = prompt.bottom + OPTION_SPACING;
-            }
-        });
-
-    }
-
     function SpeedBoost(x, y, direction) {
         this.direction = direction;
         this.amount = 0;
@@ -1915,6 +1804,7 @@ function GameState(game) {
                     case '!':
                         spriteKey = (Snail.file.powerups.indexOf("scarf") > -1) ? "cat_scarf" : "caterpillar";
                         snail = new Player(j * 50, i * 50, spriteKey);
+                        game.snail = snail;
                         snail.loadPowerups(Snail.file.powerups);
                         break;
                     case '.':
@@ -2053,7 +1943,8 @@ function GameState(game) {
                         break;
                     case 't':
                         spriteKey = 'boing';
-                        currentTile = new Boingbug(j * 50, i * 50, boingbugCounter);
+                        console.log("groups: " + game.groups);
+                        currentTile = new Boingbug(game, j * 50, i * 50, Snail.cleanMap.dialogues[boingbugCounter]);
                         boingbugCounter += 1;
                         arrays.boingbugs.push(currentTile);
                         break;
@@ -2108,16 +1999,6 @@ function GameState(game) {
             arrays[keyy] = [];
         });
         setUpLevel(map.layouts[areaNumber]);
-    }
-
-    function pauseAnimations(paused) {
-        snail.sprite.animations.paused = paused;
-        groups.stinkbugs.forEach(function (stinkbugSprite) {
-            stinkbugSprite.animations.paused = paused;
-        }, this, true);
-        groups.boingbugs.forEach(function (boingbugSprite) {
-            boingbugSprite.animations.paused = paused;
-        }, this, true);
     }
 
     function moveCamera() {
@@ -2221,6 +2102,7 @@ function GameState(game) {
 
     function addKeys() {
         cursors = game.input.keyboard.createCursorKeys();
+        game.cursors = cursors;
         enterKey = game.input.keyboard.addKey(13);
         saveKey = game.input.keyboard.addKey(83);
         killKey = game.input.keyboard.addKey(75);
@@ -2231,6 +2113,18 @@ function GameState(game) {
         shiftKey = game.input.keyboard.addKey(16);
         pauseKey = game.input.keyboard.addKey(80);
         dropKey = game.input.keyboard.addKey(68);
+        game.keys = {
+            enterKey: enterKey,
+            saveKey: saveKey,
+            killKey: killKey,
+            hideKey: hideKey,
+            muteKey: muteKey,
+            shootKey: shootKey,
+            boingbugKey: boingbugKey,
+            shiftKey: shiftKey,
+            pauseKey: pauseKey,
+            dropKey: dropKey
+        };
     }
 
     this.create = function () {

@@ -1,3 +1,36 @@
+function DialogueController(trees, deciders) {
+    this.trees = trees;
+    this.deciders = deciders;
+    this.currentDialogue = 0;
+    this.gameObject = null;
+    var firstTime = true;
+    this.getNextDialogue = function (game) {
+        if (firstTime) {
+            firstTime = false;
+            console.log("curdialogue here " + this.currentDialogue);            
+            this.currentDialogue = deciders[0].apply(null, [game, this.gameObject, this.currentDialogue]);
+            return trees[this.currentDialogue];
+        }
+        if (deciders[this.currentDialogue] != null) {
+            this.currentDialogue = deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
+        }
+        console.log({currentDialogue: this.currentDialogue});
+        return trees[this.currentDialogue];        
+    }
+}
+
+function DialogueTree(prompt, options) {
+    this.prompt = prompt;
+    this.options = options;
+}
+
+function DialogueOption(text, tree) {
+    this.text = text;
+    this.tree = tree;
+}
+
+var DIALOGUE_DONE = new DialogueTree("DONE", []);
+
 var responseTrees = {
     jumpExplainer: {
         directions: {

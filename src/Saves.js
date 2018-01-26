@@ -1,4 +1,5 @@
 var States = window.States || {};
+var Snail = window.Snail || Initialize();
 var SaveState = function (game) {
     var titleText = null;
     var background = null;

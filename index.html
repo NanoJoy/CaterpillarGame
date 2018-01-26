@@ -7,48 +7,35 @@
     <link rel="icon" type="image/png" href="assets/visual/favicon.png" />
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu+Mono|VT323" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/2.4.4/phaser.min.js"></script>
+    <script src="src/things/Boingbug.js"></script>
+    <script src="src/things/ResponseBox.js"></script>
+    <script src="src/Initializ.js"></script>
+    <script src="src/ResponseTrees.js"></script>
+    <script src="src/levels/Level.js"></script>
+    <script src="src/levels/level1.js"></script>
+    <script src="src/Boot.js"></script>
+    <script src="src/Midload.js"></script>
+    <script src="src/Game.js"></script>
+    <script src="src/Intro.js"></script>
+    <script src="src/Saves.js"></script>
+    <script src="src/Preloader.js"></script>
+
 </head>
 
 <body>
     <div id="page">
     </div>
     <script>
-        var otherJS = ["src/ResponseTrees.js", "src/Initializ.js"];
-        var states = ["Boot", "Preloader", "Saves", "Intro", "Game", "Midload"];
-        var loadingFiles = 0;
-        function ready() {
-            var title = document.createElement("h2");
-            title.style = "font-family: VT323";
-            title.innerHTML = "Caterpillar Game";
-            document.getElementById("page").appendChild(title);
-            var game = new Phaser.Game(Snail.GAME_WIDTH, Snail.GAME_HEIGHT, Phaser.AUTO, 'game', null, false, false, null);
-            for (var i = 0; i < states.length; i++) {
-                game.state.add(states[i], States[states[i]]);
-            }
-            game.state.start('Boot');
+        var title = document.createElement("h2");
+        title.style = "font-family: VT323";
+        title.innerHTML = "Caterpillar Game";
+        document.getElementById("page").appendChild(title);
+        var game = new Phaser.Game(800, 450, Phaser.AUTO, 'game', null, false, false, null);
+        var states = ["Boot", "Midload", "Game", "Intro", "Saves", "Preloader"];
+        for (var i = 0; i < states.length; i++) {
+            game.state.add(states[i], States[states[i]]);
         }
-        function loadJS(src) {
-            loadingFiles++;
-            var s = document.createElement("script");
-            s.src = src;
-            document.getElementsByTagName("head")[0].appendChild(s);
-            s.onload = function () {
-                loadingFiles--;
-                if (loadingFiles === 0) {
-                    ready();
-                }
-            }
-        }
-        loadJS("src/levels/level1.js");
-        if (!window.Phaser) {
-            loadJS("src/phaser.min.js");
-        }
-        for (i = 0; i < states.length; i++) {
-            loadJS("src/" + states[i] + ".js");
-        }
-        for (var i = 0; i < otherJS.length; i++) {
-            loadJS(otherJS[i]);
-        }
+        game.state.start('Boot');
     </script>
 </body>
 
