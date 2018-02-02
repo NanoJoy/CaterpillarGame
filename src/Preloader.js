@@ -3,6 +3,11 @@ var Snail = window.Snail || Initialize();
 States.Preloader = function(game) {
     var spriteKeys = [
         {
+            key: "press_b",
+            width: 50,
+            height: 50
+        },
+        {
             key: "background",
             width: 64,
             height: 32
