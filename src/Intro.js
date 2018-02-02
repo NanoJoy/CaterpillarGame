@@ -3,6 +3,8 @@ States.Intro = function (game) {
     var background;
     var pressEnterText;
     var enterKey;
+    var skipText
+    var skipKey;
     var storyText;
     var storyCount = 0;
 
@@ -38,14 +40,24 @@ States.Intro = function (game) {
     this.create = function() {
         background = game.add.tileSprite(0, 0, Snail.GAME_WIDTH, Snail.GAME_HEIGHT, "menu_background");
         background.tint = 0xc6c6c6;
+
         pressEnterText = game.add.text(0, 0, "Press Enter", { fill: "white", font: "30px VT323" });
         Snail.centerThing(pressEnterText);
         pressEnterText.y = Snail.GAME_HEIGHT - 50;
+
+        skipText = game.add.text(0, 0, "Press S to skip", { fill: "white", font: "12px VT323" });
+        Snail.centerThing(skipText);
+        skipText.y = Snail.GAME_HEIGHT - 20;
 
         displayStory();
 
         enterKey = game.input.keyboard.addKey(Phaser.KeyCode.ENTER);
         enterKey.onUp.add(enterPressed);
+
+        skipKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
+        skipKey.onUp.add(function () {
+            game.state.start("Midload");
+        });
     };
 
 };

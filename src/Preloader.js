@@ -1,4 +1,5 @@
 var States = window.States || {};
+var Snail = window.Snail || Initialize();
 States.Preloader = function(game) {
     var spriteKeys = [
         {

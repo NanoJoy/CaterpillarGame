@@ -7,15 +7,17 @@ function DialogueController(trees, deciders) {
     this.getNextDialogue = function (game) {
         if (firstTime) {
             firstTime = false;
-            console.log("curdialogue here " + this.currentDialogue);            
             this.currentDialogue = deciders[0].apply(null, [game, this.gameObject, this.currentDialogue]);
             return trees[this.currentDialogue];
         }
-        if (deciders[this.currentDialogue] != null) {
+        if (deciders[this.currentDialogue + 1] !== null) {
             this.currentDialogue = deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
         }
-        console.log({currentDialogue: this.currentDialogue});
         return trees[this.currentDialogue];        
+    };
+    this.reset = function () {
+        firstTime = true;
+        this.currentDialogue = 0;
     }
 }
 

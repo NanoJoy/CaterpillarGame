@@ -1296,6 +1296,7 @@ function GameState(game) {
             }
             this.sprite.play('death', spriteStuff.speed, false);
             map.layouts[areaNumber] = JSON.parse(JSON.stringify(Snail.cleanMap.layouts[areaNumber]));
+            Snail.cleanMap.dialogues[areaNumber].reset();
             for (i = 0; i < this.tempPowerups.length; i++) {
                 Snail.file.powerups.splice(Snail.file.powerups.indexOf(this.tempPowerups[i]), 1);
             }
@@ -1943,8 +1944,7 @@ function GameState(game) {
                         break;
                     case 't':
                         spriteKey = 'boing';
-                        console.log("groups: " + game.groups);
-                        currentTile = new Boingbug(game, j * 50, i * 50, Snail.cleanMap.dialogues[boingbugCounter]);
+                        currentTile = new Boingbug(game, j * 50, i * 50, Snail.cleanMap.dialogues[areaNumber]);
                         boingbugCounter += 1;
                         arrays.boingbugs.push(currentTile);
                         break;

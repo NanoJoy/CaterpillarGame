@@ -56,7 +56,6 @@ var SaveState = function (game) {
     }
 
     function enterPressed() {
-        console.log(newGameButton);
         if (currentStorage === null || selectedButton === newGameButton) {
             Snail.file = file;
         } else {

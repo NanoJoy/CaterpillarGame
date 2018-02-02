@@ -1,4 +1,5 @@
 var States = window.States || {};
+var Snail = window.Snail || Initialize();
 States.Boot = function (game) {
   this.preload = function() {
     game.load.image('loading_bar', 'assets/visual/loading_bar.png');
