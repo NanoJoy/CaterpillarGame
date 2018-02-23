@@ -445,7 +445,7 @@ function Initialize() {
             ],
             lampNames: [null, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
             powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-            redDragDirections: [["right", "left", "right"]]
+            redDragDirections: [getLevelOne().redDragDirections]
         }
     }
 };

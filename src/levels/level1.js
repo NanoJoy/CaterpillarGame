@@ -4,20 +4,20 @@ function getLevelOne() {
 
     var levelOneL = [
         "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-        "g               3g                                            g",
-        "g 2        gwwwwwg                                            g",
-        "ggggggggg  ggggggg                                            g",
-        "ggggggggg        g                                            g",
-        "ggggggggg        g                                            g",
-        "gggggggggj >>>   g                                            g",
-        "ggggggggg   gg   g                                            g",
-        "ggggggggg        g                                            g",
-        "ggggggggg       jg                                            g",
-        "ggggggggg        g                                            g",
-        "ggggggggg        g                                            g",
-        "gggggggggj   ggggg                                            g",
-        "gggggggggg   t  !@                                            g",
-        "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+        "g               3gggggg                                       g",
+        "g 2        gwwwwwgggggg                                       g",
+        "ggggggggg  gggggggggggg                                       g",
+        "ggggggggg        gggggg                                       g",
+        "ggggggggg        gggg          gggggggggggggggg               g",
+        "gggggggggj >>>   g          gggg                              g",
+        "ggggggggg   gg   g         gg                                 g",
+        "ggggggggg        g   r             zzzz     r                 g",
+        "ggggggggg       jg                 ggggzz     !               g",
+        "ggggggggg        g           zzzzzzggggggzzzggg   ggggggggggggg",
+        "ggggggggg        gzzzzzzzzzzzg                    ggggggggggggg",
+        "gggggggggj   gggggg      gg   t b                jggggggggggggg",
+        "gggggggggg   t   @i   s  i#   ggg   s    gggb    is    i      g",
+        "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
     ];
 
     levelOne.layout = [];
@@ -25,12 +25,13 @@ function getLevelOne() {
         levelOne.layout.push(row.split(""));
     });
 
-    var jumpTree = new DialogueTree("Thank you. I don't know if you can jump. If you can, it's by pressing UP", [
+    var jumpTree = new DialogueTree("Thank you. I don't know if you can jump. If you can, it's by pressing UP.", [
         new DialogueOption("Ok", DIALOGUE_DONE)
     ]);
 
     var whatHappenedToBoingbugTree = new DialogueTree("Two days ago this low vibration started Fluttertown. You probably can't hear it, but it seems " + 
-    "to have some physiological effect on Boingbugs. None of us can move! It's really a disaster. On top of that, our Stinkbugs have been driven mad by it and escaped.", [
+    "to have some physiological effect on Boingbugs. None of us can move! It's really a disaster. On top of that, our Stinkbugs have been driven mad by it and escaped. " +
+    "My keys are upstairs. If you get them you can get out of here and explore.", [
         new DialogueOption("I'll see what I can do.", jumpTree),
         new DialogueOption("What's a Stinkbug?", new DialogueTree("They are gentle beasts we use for labor, but since the vibrations have started they seem wild. I would be careful around them.", [
             new DialogueOption("I'll see what I can do.", jumpTree)
@@ -69,6 +70,18 @@ function getLevelOne() {
         ])
     ];
 
+    var lookAheadTrees = [
+        new DialogueTree("If you are unsure what to do, it is wise to pause and take a look around. You can look around by holding SHIFT and using the arrow keys.", [
+            new DialogueOption("Do you need food also?", new DialogueTree("Food would be nice, but I try to appreciate my memories of when I wasn't starving.", [
+                new DialogueOption("Ok.", DIALOGUE_DONE)
+            ])),
+            new DialogueOption("Thanks for the advice.", DIALOGUE_DONE)
+        ]),
+        new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time.", [
+            new DialogueOption("Ok.", DIALOGUE_DONE)
+        ])
+    ];
+
     var levelOneDeciders = [
         function (game, owner, currentDialogue) {
             return 0;
@@ -93,6 +106,21 @@ function getLevelOne() {
         null
     ];
 
-    levelOne.dialogue = new DialogueController(levelOneTrees, levelOneDeciders);
+    var lookAheadDeciders = [
+        function (game, owner, currentDialogue) {
+            return 0;
+        },
+        function (game, owner, currentDialogue) {
+            return 1;
+        },
+        null
+    ]
+
+    levelOne.dialogue = [
+        new DialogueController(lookAheadTrees, lookAheadDeciders),
+        new DialogueController(levelOneTrees, levelOneDeciders)
+    ];
+
+    levelOne.redDragDirections = ["right", "left"];
     return levelOne;
 }

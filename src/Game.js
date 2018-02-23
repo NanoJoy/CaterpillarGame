@@ -35,6 +35,7 @@ function GameState(game) {
     var pauseMainMenu = null;
     var controlsDisp = null;
     var resultsDisp = null;
+    var cameraBorder = null;
     var scarfHad = false;
     var startTime = 0;
     var areaNumber = 0;
@@ -930,7 +931,7 @@ function GameState(game) {
                 for (i = 0; i < arrays.redDrags.length; i++) {
                     redDrag = arrays.redDrags[i];
                     game.physics.arcade.overlap(this.sprite, redDrag.sprite, function (playerSprite, redDragSprite) {
-                        if (!redDrag.done) {
+                        if (!dropKey.isDown && !redDrag.done) {
                             this.curRedDrag = redDrag;
                             this.curRedDrag.activated = true;
                             playerSprite.body.position.setTo(redDragSprite.body.position.x, redDragSprite.body.position.y + redDragSprite.height);
@@ -1054,7 +1055,7 @@ function GameState(game) {
                 if (Math.abs(this.sprite.body.velocity.x) < 10) {
                     this.sliding = false;
                 }
-                if (cursors.up.isDown) {
+                if (cursors.up.isDown && !shiftKey.isDown) {
                     this.jumping = true;
                 }
                 if (this.jumping) {
@@ -1296,7 +1297,9 @@ function GameState(game) {
             }
             this.sprite.play('death', spriteStuff.speed, false);
             map.layouts[areaNumber] = JSON.parse(JSON.stringify(Snail.cleanMap.layouts[areaNumber]));
-            Snail.cleanMap.dialogues[areaNumber].reset();
+            Snail.cleanMap.dialogues[areaNumber].forEach(function (it) {
+                it.reset();
+            });
             for (i = 0; i < this.tempPowerups.length; i++) {
                 Snail.file.powerups.splice(Snail.file.powerups.indexOf(this.tempPowerups[i]), 1);
             }
@@ -1944,7 +1947,7 @@ function GameState(game) {
                         break;
                     case 't':
                         spriteKey = 'boing';
-                        currentTile = new Boingbug(game, j * 50, i * 50, Snail.cleanMap.dialogues[areaNumber]);
+                        currentTile = new Boingbug(game, j * 50, i * 50, Snail.cleanMap.dialogues[areaNumber][boingbugCounter]);
                         boingbugCounter += 1;
                         arrays.boingbugs.push(currentTile);
                         break;
@@ -2007,6 +2010,7 @@ function GameState(game) {
         var SNAP_DISTANCE = 10;
         var RETURN_INC = 10;
         if (!shiftKey.isDown) {
+            cameraBorder.forEach(function (it) { it.visible = false; });            
             var rightLimit = (snail.sprite.x + snail.sprite.width) - (Snail.GAME_WIDTH - MARGIN_X);
             if (game.camera.x < rightLimit) {
                 if (rightLimit - game.camera.x < SNAP_DISTANCE) {
@@ -2042,6 +2046,10 @@ function GameState(game) {
                 }
             }
         } else {
+            cameraBorder.forEach(function (it) { 
+                it.visible = true;
+                game.world.bringToTop(it);
+            });
             if (cursors.right.isDown) {
                 game.camera.x += 5;
             }
@@ -2162,6 +2170,20 @@ function GameState(game) {
         midground.fixedToCamera = true;
         midground.tint = 0x4444dd;
         midground.samCounter = 0;
+
+        var BORDER_MARGIN = 40;
+        cameraBorder = [
+            game.add.sprite(Snail.GAME_WIDTH -  BORDER_MARGIN - 20, Snail.GAME_HEIGHT - BORDER_MARGIN - 20, "camera_border"),
+            game.add.sprite(Snail.GAME_WIDTH -  BORDER_MARGIN - 20, BORDER_MARGIN, "camera_border"),
+            game.add.sprite(BORDER_MARGIN, BORDER_MARGIN, "camera_border"),
+            game.add.sprite(BORDER_MARGIN, Snail.GAME_HEIGHT - BORDER_MARGIN - 20, "camera_border")            
+        ];
+        cameraBorder.forEach(function (it, index) {
+            it.frame = index;
+            it.fixedToCamera = true;
+            it.visible = false;
+        });
+
         game.world.sendToBack(background);
         map = JSON.parse(JSON.stringify(Snail.cleanMap));
         fileMap = Snail.file.map;

@@ -46,6 +46,10 @@ States.Preloader = function(game) {
             width: 50,
             height: 50
         }, {
+            key: "camera_border",
+            width: 20,
+            height: 20
+        }, {
             key: "cat_scarf",
             width: 52,
             height: 30
