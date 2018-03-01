@@ -1,6 +1,8 @@
 var States = window.States || {};
 var Snail = window.Snail || Initialize();
+
 function GameState(game) {
+    var TILE_SIZE = 50;
     var fileMap = null;
     var background = null;
     var midground = null;
@@ -95,6 +97,10 @@ function GameState(game) {
         waters: [],
         worms: []
     };
+
+    game.getLevelWidth = function() {
+        return map.layouts[areaNumber][0].length * TILE_SIZE;
+    }
 
     function Ammo(x, y) {
         this.location = [x, y];
@@ -1343,42 +1349,6 @@ function GameState(game) {
         };
     }
 
-    function RedDrag(x, y, direction) {
-        var SPEED_X = 100;
-        var MAX_Y = 150;
-        var INC_Y = 10;
-        this.sprite = groups.redDrags.create(x * 50, y * 50, "red_drag");
-        game.physics.arcade.enable(this.sprite);
-        this.sprite.body.gravity.y = gravityLevel * -1;
-        this.sprite.animations.add("fly", [0, 1, 2, 3], 7, true);
-        this.sprite.play("fly");
-        this.activated = false;
-        this.blockedUp = false;
-        this.done = false;
-        this.direction = direction;
-        this.sprite.scale.x = direction == "right" ? -1 : 1;
-        this.sprite.anchor.x = direction == "right" ? 0.5 : 1;
-        this.update = function () {
-            if (this.activated) {
-                var touchingGround = false;
-                game.physics.arcade.collide(this.sprite, groups.grounds, function (redDragSprite, groundSprite) {
-                    touchingGround = true;
-                }, null, this);
-                this.blockedUp = this.sprite.body.touching.up;
-                if ((this.sprite.body.touching.right || this.sprite.body.touching.left) && touchingGround) {
-                    this.activated = false;
-                    snail.curRedDrag = null;
-                    this.done = true;
-                    var destinationX = this.direction == "right" ? map.layouts[areaNumber][0].length * 50 : -1 * this.sprite.width;
-                    game.add.tween(this.sprite).to({ y: -100, x:  destinationX }, 2000, Phaser.Easing.Linear.None, true, 0);
-                    //this.sprite.destroy();
-                }
-            }
-        };
-        this.flyAway = function () {
-        };
-    }
-
     function Rock(x, y, miniGameName) {
         this.sprite = groups.rocks.create(x * 50, y * 50 - 10, 'rock');
         this.sprite.animations.add("sparkle", [0, 1], 5, true);
@@ -1936,7 +1906,7 @@ function GameState(game) {
                         arrays.powerups.push(currentTile);
                         break;
                     case 'r':
-                        currentTile = new RedDrag(j, i, map.redDragDirections[areaNumber][redDragCounter]);
+                        currentTile = new RedDrag(game, j, i, map.redDragDirections[areaNumber][redDragCounter]);
                         arrays.redDrags.push(currentTile);
                         redDragCounter++;
                         break;

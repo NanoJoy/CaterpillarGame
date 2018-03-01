@@ -158,7 +158,7 @@ function Initialize() {
                 //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
                 //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
                 // ],
-                getLevelOne().layout,
+                levelOne.layout,
                 [//0
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
@@ -425,7 +425,7 @@ function Initialize() {
             ],
             musics: ["game_music_1", null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
             dialogues: [
-                getLevelOne().dialogue,
+                levelOne.dialogue,
                 ["firstBoingbug"],
                 ["blockExplainer"],
                 [],
@@ -445,7 +445,7 @@ function Initialize() {
             ],
             lampNames: [null, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
             powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-            redDragDirections: [getLevelOne().redDragDirections]
+            redDragDirections: [levelOne.redDragDirections]
         }
     }
 };
