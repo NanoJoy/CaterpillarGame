@@ -9,6 +9,7 @@ var SaveState = function (game) {
     var selectedButton = null;
     var currentStorage = null;
     var file = {
+        dialogueStates: {},
         map: [],
         lampName: "newgame",
         lampPos: [],
@@ -56,12 +57,10 @@ var SaveState = function (game) {
     }
 
     function enterPressed() {
-        if (currentStorage === null || selectedButton === newGameButton) {
-            Snail.file = file;
-        } else {
-            Snail.file = JSON.parse(currentStorage);
+        if (currentStorage !== null && selectedButton !== newGameButton) {
+            SaveData = JSON.parse(currentStorage);
         }
-        Snail.areaNumber = Snail.cleanMap.lampNames.indexOf(Snail.file.lampName);
+        Snail.areaNumber = Snail.cleanMap.lampNames.indexOf(SaveData.lampName);
         if (Snail.areaNumber === -1) {
             Snail.areaNumber = 0;
         }
@@ -86,7 +85,7 @@ var SaveState = function (game) {
     }
 
     this.create = function () {
-        currentStorage = localStorage.getItem("CaterpillarGame");
+        currentStorage = localStorage.getItem("SamIsAnIdiot");
         background = game.add.tileSprite(0, 0, Snail.GAME_WIDTH, Snail.GAME_HEIGHT, "menu_background");
         background.tint = 0xc6c6c6;
         border = game.add.image(0, 0, "start_border");

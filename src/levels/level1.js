@@ -4,22 +4,23 @@ var levelOne = new Level();
 
 var levelOneL = [
     "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-    "g               3gggggg                                       g",
+    "g               2gggggg                                       g",
     "g 2        gwwwwwgggggg                                       g",
     "ggggggggg  gggggggggggg                                       g",
     "ggggggggg        gggggg                                       g",
     "ggggggggg        gggg          gggggggggggggggg               g",
-    "gggggggggj >>>   g          gggg                              g",
+    "gggggggggj >>>   gg         gggg                              g",
     "ggggggggg   gg   g         gg                                 g",
     "ggggggggg        g   r             zzzz     r                 g",
-    "ggggggggg       jg                 ggggzz     !               g",
-    "ggggggggg        g           zzzzzzggggggzzzggg   ggggggggggggg",
-    "ggggggggg        gzzzzzzzzzzzg                    ggggggggggggg",
-    "gggggggggj   gggggg      gg   t b                jggggggggggggg",
-    "gggggggggg   t   @i   s  i#   ggg   s    gggb    is    i      g",
+    "ggggggggg       jg                 ggggzz                     g",
+    "ggggggggg        #           zzzzzzggggggzzzggg   ggggggggggggg",
+    "ggggggggg        gggzzzzzzzzzg                    ggggggggggggg",
+    "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
+    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is    i      g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ];
 
+levelOne.lampName = "lamp1";
 levelOne.layout = [];
 levelOneL.forEach(function (row) {
     levelOne.layout.push(row.split(""));
@@ -117,8 +118,8 @@ var lookAheadDeciders = [
 ]
 
 levelOne.dialogue = [
-    new DialogueController(lookAheadTrees, lookAheadDeciders),
-    new DialogueController(levelOneTrees, levelOneDeciders)
+    new DialogueController("lookAhead", lookAheadTrees, lookAheadDeciders),
+    new DialogueController("firstBoingbug", levelOneTrees, levelOneDeciders)
 ];
 
 levelOne.redDragDirections = ["right", "left"];

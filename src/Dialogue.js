@@ -1,35 +1,50 @@
-function DialogueController(trees, deciders) {
-    this.trees = trees;
-    this.deciders = deciders;
-    this.currentDialogue = 0;
-    this.gameObject = null;
-    var firstTime = true;
-    this.getNextDialogue = function (game) {
-        if (firstTime) {
-            firstTime = false;
-            this.currentDialogue = deciders[0].apply(null, [game, this.gameObject, this.currentDialogue]);
-            return trees[this.currentDialogue];
-        }
-        if (deciders[this.currentDialogue + 1] !== null) {
-            this.currentDialogue = deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
-        }
-        return trees[this.currentDialogue];        
-    };
-    this.reset = function () {
-        firstTime = true;
+var DialogueController = (function () {
+    function DialogueController(name, trees, deciders) {
+        this.name = name;
+        this.trees = trees;
+        this.deciders = deciders;
         this.currentDialogue = 0;
+        this.gameObject = null;
+        this.firstTime = true;
     }
-}
+    DialogueController.prototype.getNextDialogue = function (game) {
+        if (this.firstTime) {
+            this.firstTime = false;
+            this.currentDialogue = this.deciders[0].apply(null, [game, this.gameObject, this.currentDialogue]);
+            return this.trees[this.currentDialogue];
+        }
+        if (this.deciders[this.currentDialogue + 1] !== null) {
+            console.log(this.currentDialogue);
+            this.currentDialogue = this.deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
+        }
+        return this.trees[this.currentDialogue];
+    };
+    DialogueController.prototype.reset = function () {
+        this.firstTime = true;
+        this.currentDialogue = 0;
+    };
+    DialogueController.prototype.setTo = function(num) {
+        this.firstTime = false;
+        this.currentDialogue = num;
+    }
+    return DialogueController;
+})();
 
-function DialogueTree(prompt, options) {
-    this.prompt = prompt;
-    this.options = options;
-}
+var DialogueTree = (function () {
+    function DialogueTree(prompt, options) {
+        this.prompt = prompt;
+        this.options = options;
+    }
+    return DialogueTree;
+})();
 
-function DialogueOption(text, tree) {
-    this.text = text;
-    this.tree = tree;
-}
+var DialogueOption = (function () {
+    function DialogueOption(text, tree) {
+        this.text = text;
+        this.tree = tree;
+    }
+    return DialogueOption;
+})();
 
 var DIALOGUE_DONE = new DialogueTree("DONE", []);
 
@@ -79,23 +94,21 @@ var responseTrees = {
         ]
     },
     rock: {
-       prompt: "Will you lift the rock?",
-       options: [
-           {
-               text: "Yes",
-               tree: "DONE"
+        prompt: "Will you lift the rock?",
+        options: [
+            {
+                text: "Yes",
+                tree: "DONE"
             },
             {
                 text: "No",
                 tree: "DONE"
             }
-       ]
+        ]
     },
     firstBoingbug: {
         firstTime: {
-            prompt: "You should know that you can get around town by touching leaves. " +
-                "Nobody really knows how it works, but it does. " +
-                "Most of us are pretty friendly. You can talk to any of us again by pressing B.",
+            prompt: "You should know that you can get around town by touching leaves. " + "Nobody really knows how it works, but it does. " + "Most of us are pretty friendly. You can talk to any of us again by pressing B.",
             options: [
                 {
                     text: "Ok. Bye",
@@ -104,8 +117,7 @@ var responseTrees = {
             ]
         },
         questionWrong: {
-            prompt: "Everybody who has even walked past here knows about the bravery of our first mayor, The World's Fattest Snail. " +
-                "Let me give you some pointers since you are clearly new.",
+            prompt: "Everybody who has even walked past here knows about the bravery of our first mayor, The World's Fattest Snail. " + "Let me give you some pointers since you are clearly new.",
             options: [
                 {
                     text: "Sure",
@@ -134,8 +146,7 @@ var responseTrees = {
             {
                 text: "No",
                 tree: {
-                    prompt: "It's not? You don't look like anyone I've see before. I don't believe you. " +
-                        "Hmm...  You should know this then: Who was the first mayor of BoingbugTown?",
+                    prompt: "It's not? You don't look like anyone I've see before. I don't believe you. " + "Hmm...  You should know this then: Who was the first mayor of BoingbugTown?",
                     options: [
                         {
                             text: "Henrik the Jolly Bouncer",
@@ -265,7 +276,7 @@ var responseTrees = {
                             }
                         }
                     ]
-                },
+                }
             },
             {
                 text: "What's a stinkbug?",
@@ -290,7 +301,7 @@ var responseTrees = {
                             tree: "DONE"
                         }
                     ]
-                }  
+                }
             },
             {
                 text: "Yes, but you must promise me you will always remain faithful to her",
@@ -428,7 +439,7 @@ var responseTrees = {
                                 options: [
                                     {
                                         text: "Ok",
-                                        tree: "DONE",
+                                        tree: "DONE"
                                     },
                                     {
                                         text: "Ok...  ...",
@@ -528,7 +539,7 @@ var responseTrees = {
                     ]
                 }
             }
-        ],  
+        ]
     },
     floating: {
         prompt: "I've been floating here for over a year. What the fuck is going on?",
@@ -583,7 +594,7 @@ var responseTrees = {
                     options: [
                         {
                             text: "You're right",
-                            tree: "DONE",
+                            tree: "DONE"
                         },
                         {
                             text: "I'm not ready to grow up yet",

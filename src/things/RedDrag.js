@@ -21,14 +21,16 @@ function RedDrag(game, x, y, direction) {
                 }, null, this);
                 this.blockedUp = this.sprite.body.touching.up;
                 if ((this.sprite.body.touching.right || this.sprite.body.touching.left) && touchingGround) {
-                    this.activated = false;
-                    game.snail.curRedDrag = null;
-                    this.done = true;
-                    var destinationX = this.direction == "right" ? game.getLevelWidth() : -1 * this.sprite.width;
-                    game.add.tween(this.sprite).to({ y: -100, x: destinationX }, 2000, Phaser.Easing.Linear.None, true, 0);
+                    this.flyAway()
                 }
             }
         };
 
-        this.flyAway = function () {};
+        this.flyAway = function () {
+            this.activated = false;
+            game.snail.curRedDrag = null;
+            this.done = true;
+            var destinationX = this.direction == "right" ? game.getLevelWidth() : -1 * this.sprite.width;
+            game.add.tween(this.sprite).to({ y: -100, x: destinationX }, 2000, Phaser.Easing.Linear.None, true, 0);
+        };
     }

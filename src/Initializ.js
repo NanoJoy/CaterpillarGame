@@ -118,6 +118,25 @@ function Initialize() {
                 align: 'center'
             }
         },
+        dialogues: [
+                levelOne.dialogue,
+                ["firstBoingbug"],
+                ["blockExplainer"],
+                [],
+                ["spazzy", "stinkbugs"],
+                ["saves", "killStinkbug"],
+                ["behindDoor"],
+                ["orb"],
+                ["deer"],
+                ["placeholder"],
+                [],
+                [],
+                [],
+                [],
+                ['none', 'none', 'none', 'none', 'none'],
+                ['none', 'none', 'none', 'none', 'none'],
+                ['none', 'none', 'none', 'none', 'none']
+            ],
         cleanMap: {
             layouts: [
                 // [
@@ -424,26 +443,7 @@ function Initialize() {
                 [15]
             ],
             musics: ["game_music_1", null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
-            dialogues: [
-                levelOne.dialogue,
-                ["firstBoingbug"],
-                ["blockExplainer"],
-                [],
-                ["spazzy", "stinkbugs"],
-                ["saves", "killStinkbug"],
-                ["behindDoor"],
-                ["orb"],
-                ["deer"],
-                ["placeholder"],
-                [],
-                [],
-                [],
-                [],
-                ['none', 'none', 'none', 'none', 'none'],
-                ['none', 'none', 'none', 'none', 'none'],
-                ['none', 'none', 'none', 'none', 'none']
-            ],
-            lampNames: [null, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
+            lampNames: [levelOne.lampName, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
             powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
             redDragDirections: [levelOne.redDragDirections]
         }

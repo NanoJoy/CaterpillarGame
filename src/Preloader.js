@@ -1,7 +1,10 @@
 var States = window.States || {};
 var Snail = window.Snail || Initialize();
+var spriteKeys = {
+    flowerLamp: "flower_lamp"
+};
 States.Preloader = function(game) {
-    var spriteKeys = [
+    var spriteInfos = [
         {
             key: "press_b",
             width: 50,
@@ -99,7 +102,7 @@ States.Preloader = function(game) {
             width: 8,
             height: 12
         }, {
-            key: 'flower_lamp',
+            key: spriteKeys.flowerLamp,
             width: 50,
             height: 100
         }, {
@@ -329,8 +332,8 @@ States.Preloader = function(game) {
         game.stage.backgroundColor = 0x3d2102;
         loadingBar.anchor.setTo(0.5, 1);
         game.load.setPreloadSprite(loadingBar, 0);
-        for (i = 0; i < spriteKeys.length; i += 1) {
-            item = spriteKeys[i];
+        for (i = 0; i < spriteInfos.length; i += 1) {
+            item = spriteInfos[i];
             game.load.spritesheet(item.key, 'assets/visual/' + item.key + '.png', item.width, item.height);
         }
         for (i = 0; i < soundKeys.length; i++) {
