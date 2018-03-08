@@ -1270,14 +1270,6 @@ function GameState(game) {
             this.sprite.play('death', spriteStuff.speed, false);
             console.log(Snail.cleanMap);
             map.layouts[areaNumber] = JSON.parse(JSON.stringify(Snail.cleanMap.layouts[areaNumber]));
-            Snail.dialogues[areaNumber].forEach(function (it) {
-                var savedDialogueNumber = SaveData.dialogueStates[it.name];
-                if (savedDialogueNumber === undefined) {
-                    it.reset();
-                } else {
-                    it.setTo(savedDialogueNumber);
-                }
-            });
             for (i = 0; i < this.tempPowerups.length; i++) {
                 SaveData.powerups.splice(SaveData.powerups.indexOf(this.tempPowerups[i]), 1);
             }
@@ -2149,6 +2141,14 @@ function GameState(game) {
             for (var i = 0; i < fileMap.length; i++) {
                 map.layouts[fileMap[i].a][fileMap[i].y][fileMap[i].x] = 'o';
             }
+            Snail.dialogues[areaNumber].forEach(function (it) {
+                var savedDialogueNumber = SaveData.dialogueStates[it.name];
+                if (savedDialogueNumber === undefined) {
+                    it.reset();
+                } else {
+                    it.setTo(savedDialogueNumber);
+                }
+            });
         }
         if (Snail.areaNumber === -1) {
             areaNumber = startArea;

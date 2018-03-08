@@ -60,6 +60,7 @@ var SaveState = function (game) {
         if (currentStorage !== null && selectedButton !== newGameButton) {
             SaveData = JSON.parse(currentStorage);
         }
+        console.log(SaveData);
         Snail.areaNumber = Snail.cleanMap.lampNames.indexOf(SaveData.lampName);
         if (Snail.areaNumber === -1) {
             Snail.areaNumber = 0;
