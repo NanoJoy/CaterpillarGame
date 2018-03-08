@@ -57,7 +57,7 @@ var levelOneTrees = [
     ]),
     new DialogueTree("Hurry up and get those keys. I don't know if water will hurt you. I guess you'll just have to see.", [
         new DialogueOption("Ok.", DIALOGUE_DONE)
-    ]),
+    ], false),
     new DialogueTree("Great! Thank you so much! I think I left some lichens in the next room over. Can you please bring some to me? I'm starving.", [
         new DialogueOption("I don't think I can eat lichen.", new DialogueTree("I know... I know you come from far away and I'm sorry but what else are you going to do. It would be even better if you could find the source of that terrible vibration.", [
             new DialogueOption("I'll see what I can do.", DIALOGUE_DONE),
@@ -65,10 +65,10 @@ var levelOneTrees = [
         ])),
         new DialogueOption("I'll see what I can do.", DIALOGUE_DONE),
         new DialogueOption("I'm on it.", DIALOGUE_DONE)
-    ]),
+    ], true),
     new DialogueTree("... Uuugghhh... So hungry...", [
         new DialogueOption("...", DIALOGUE_DONE)
-    ])
+    ], false)
 ];
 
 var lookAheadTrees = [
@@ -77,7 +77,7 @@ var lookAheadTrees = [
             new DialogueOption("Ok.", DIALOGUE_DONE)
         ])),
         new DialogueOption("Thanks for the advice.", DIALOGUE_DONE)
-    ]),
+    ], true),
     new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time.", [
         new DialogueOption("Ok.", DIALOGUE_DONE)
     ])

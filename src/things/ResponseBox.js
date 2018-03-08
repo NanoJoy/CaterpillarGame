@@ -20,7 +20,6 @@ function ResponseBox(game, diTree, parent) {
     prompt.wordWrap = true;
     prompt.wordWrapWidth = Snail.GAME_WIDTH - MARGIN_X * 2;
     helper.anchor.x = 0.5;
-    console.log(diTree.options);
     for (var i = 0; i < numOptions; i++) {
         options[i] = game.add.text(prompt.x + 20, prompt.bottom + (OPTION_SPACING * (i + 1)), diTree.options[i].text, Snail.textStyles.boingbox);
         options[i].fixedToCamera = true;
@@ -63,7 +62,6 @@ function ResponseBox(game, diTree, parent) {
                 options[i].destroy();
             }
             diTree = diTree.options[selectedOption].tree;
-            console.log(diTree);
             prompt.text = diTree.prompt;
             options = [];
             numOptions = diTree.options.length;

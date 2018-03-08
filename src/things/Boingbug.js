@@ -24,7 +24,7 @@ function Boingbug(game, x, y, dialogueController) {
             if (!this.textbox.showing) {
                 pressBSprite.visible = true;
             }
-            if (!this.textbox.showing && (!boxShown || game.keys.boingbugKey.isDown)) {
+            if (!this.textbox.showing && (dialogueController.nextIsForced(game) || game.keys.boingbugKey.isDown)) {
                 var dialogue = dialogueController.getNextDialogue(game);
                 if (dialogue !== DIALOGUE_DONE) {
                     game.sound.play("boingbug");
