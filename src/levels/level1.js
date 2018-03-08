@@ -1,15 +1,14 @@
 
 var levelOne = new Level();
 
-
-var levelOneL = [
+levelOne.layout = transformOldToNewLevel([
     "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "g               2gggggg                                       g",
     "g 2        gwwwwwgggggg                                       g",
-    "ggggggggg  gggggggggggg                                       g",
-    "ggggggggg        gggggg                                       g",
-    "ggggggggg        gggg          gggggggggggggggg               g",
-    "gggggggggj >>>   gg         gggg                              g",
+    "gggggggg   gggggggggggg                                       g",
+    "gggggggg         gggggg                                       g",
+    "gggggggg         gggg          gggggggggggggggg               g",
+    "ggggggggj  >>>   gg         gggg                              g",
     "ggggggggg   gg   g         gg                                 g",
     "ggggggggg        g   r             zzzz     r                 g",
     "ggggggggg       jg                 ggggzz                     g",
@@ -18,13 +17,7 @@ var levelOneL = [
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
     "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is    i      g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
-];
-
-levelOne.lampName = "lamp1";
-levelOne.layout = [];
-levelOneL.forEach(function (row) {
-    levelOne.layout.push(row.split(""));
-});
+]);
 
 var jumpTree = new DialogueTree("Thank you. I don't know if you can jump. If you can, it's by pressing UP.", [
     new DialogueOption("Ok", DIALOGUE_DONE)
@@ -70,6 +63,10 @@ var levelOneTrees = [
         new DialogueOption("...", DIALOGUE_DONE)
     ], false)
 ];
+
+levelOneTrees[0].onFinish = function (game, character, selectedOption) { 
+    console.log("You chose " + selectedOption);
+}
 
 var lookAheadTrees = [
     new DialogueTree("If you are unsure what to do, it is wise to pause and take a look around. You can look around by holding SHIFT and using the arrow keys.", [

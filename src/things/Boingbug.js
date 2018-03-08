@@ -39,8 +39,9 @@ function Boingbug(game, x, y, dialogueController) {
             this.sprite.scale.x *= -1;
         }
     };
-    this.boxDone = function () {
+    this.boxDone = function (selectedOption) {
         boxShown = true;
         this.textbox.showing = false;
+        dialogueController.callOnFinish(game, selectedOption);
     };
 }

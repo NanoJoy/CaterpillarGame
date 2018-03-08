@@ -36,6 +36,9 @@ var DialogueController = (function () {
         this.firstTime = false;
         this.currentDialogue = num;
     }
+    DialogueController.prototype.callOnFinish = function (game, selectedOption) {
+        this.trees[this.currentDialogue].onFinish.apply(null, [game, this.gameObject, selectedOption]);
+    }
     return DialogueController;
 })();
 
@@ -43,6 +46,7 @@ function DialogueTree(prompt, options, force) {
     this.prompt = prompt;
     this.options = options;
     this.force = force;
+    this.onFinish = function (game, character, selectedOption) {};
 }
 
 var DialogueOption = (function () {

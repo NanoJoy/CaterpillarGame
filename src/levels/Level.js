@@ -7,3 +7,12 @@ var Level = (function () {
     }
     return Level;
 })();
+
+function transformOldToNewLevel(newLevel) {
+    var oldLevel = [];
+    newLevel.forEach(function (it) {
+        oldLevel.push(it.split(""));
+    })
+    console.log(oldLevel);
+    return oldLevel;
+}

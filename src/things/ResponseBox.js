@@ -54,8 +54,9 @@ function ResponseBox(game, diTree, parent) {
             game.cursors.down.onDown.removeAll();
             game.keys.enterKey.onDown.removeAll();
             this.showing = false;
+            var finalTree = diTree;
             diTree = origTree;
-            parent.boxDone(diTree.options[selectedOption].text);
+            parent.boxDone(finalTree.options[selectedOption].text);
         } else {
             game.sound.play("menu_beep");
             for (i = 0; i < options.length; i++) {
@@ -67,7 +68,6 @@ function ResponseBox(game, diTree, parent) {
             numOptions = diTree.options.length;
             for (var i = 0; i < numOptions; i++) {
                 options[i] = game.add.text(prompt.x + 20, prompt.bottom + (OPTION_SPACING * (i + 1)), diTree.options[i].text, Snail.textStyles.boingbox);
-                // options[i].fixedToCamera = true;
             }
             selectedOption = 0;
             textPointer.y = prompt.bottom + OPTION_SPACING;
