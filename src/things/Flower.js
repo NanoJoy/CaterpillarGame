@@ -5,6 +5,20 @@ function Flower(game, x, y, key, name) {
     this.sprite.body.immovable = true;
     this.name = name;
     this.isOn = false;
+    
+    var wasOverlapping = false;
+
+    var dialogueTree = new DialogueTree("Save game?", [
+        new DialogueOption("YES", DIALOGUE_DONE),
+        new DialogueOption("NO", DIALOGUE_DONE)
+    ], true);
+    dialogueTree.onFinish = function (game, character, selectedOption) {
+        if (selectedOption === "YES") {
+            game.goToSaves();
+        }
+    }
+
+    var responseBox = null;
 
     this.update = function () {
         var overlapping = false;
@@ -13,9 +27,18 @@ function Flower(game, x, y, key, name) {
             this.sprite.frame = 1;
             this.isOn = true;
         }, null, this);
+        if (overlapping && !wasOverlapping) {
+            wasOverlapping = true;
+            responseBox = new ResponseBox(game, dialogueTree, this);
+        }
         if (!overlapping && this.isOn) {
             this.sprite.frame = 0;
             this.isOn = false;
+            wasOverlapping = false;
         }
     };
+
+    this.boxDone = function (selectedOption) {
+        dialogueTree.onFinish(game, this, selectedOption);
+    }
 }

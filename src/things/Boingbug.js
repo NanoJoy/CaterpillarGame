@@ -44,4 +44,8 @@ function Boingbug(game, x, y, dialogueController) {
         this.textbox.showing = false;
         dialogueController.callOnFinish(game, selectedOption);
     };
+    this.resetDialogueOnPlayerDeath = function() {
+        dialogueController.currentDialogue = SaveData.dialogueStates[dialogueController.name];
+        dialogueController.firstTime = true;
+    }
 }

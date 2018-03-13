@@ -1289,6 +1289,7 @@ function GameState(game) {
             if (this.curRedDrag) {
                 this.curRedDrag.flyAway();
             }
+            arrays.boingbugs.forEach(function (boingbug) { boingbug.resetDialogueOnPlayerDeath(); });
             timer.add(Phaser.Timer.SECOND * 3, resetLevel);
             timer.start();
         };
@@ -1686,7 +1687,7 @@ function GameState(game) {
         };
     }
 
-    function goToSaves() {
+    game.goToSaves = function() {
         SaveData.newGame = false;
         SaveData.map = fileMap;
         SaveData.lampName = arrays.flowers[0].name;
@@ -2085,11 +2086,6 @@ function GameState(game) {
         addKeys();
         pauseKey.inputEnabled = true;
         pauseKey.onUp.add(pauseKeyPressed);
-        saveKey.onDown.add(function () {
-            if (arrays.flowers.length > 0 && arrays.flowers[0].isOn) {
-                goToSaves();
-            }
-        });
         cursors.down.wasDown = false;
         game.input.onDown.add(function () {
             inputIsDown = true;

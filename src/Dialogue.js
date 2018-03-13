@@ -1,5 +1,4 @@
-var DialogueController = (function () {
-    function DialogueController(name, trees, deciders) {
+function DialogueController(name, trees, deciders) {
         this.name = name;
         this.trees = trees;
         this.deciders = deciders;
@@ -8,10 +7,10 @@ var DialogueController = (function () {
         this.firstTime = true;
     }
     DialogueController.prototype.nextIsForced = function (game) {
+        var nextDialogue = null;        
         if (this.firstTime) {
             return true;
         }
-        var nextDialogue = null;
         if (this.deciders[this.currentDialogue + 1] !== null) {
             nextDialogue = this.deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
         }
@@ -35,12 +34,10 @@ var DialogueController = (function () {
     DialogueController.prototype.setTo = function (num) {
         this.firstTime = false;
         this.currentDialogue = num;
-    }
+    };
     DialogueController.prototype.callOnFinish = function (game, selectedOption) {
         this.trees[this.currentDialogue].onFinish.apply(null, [game, this.gameObject, selectedOption]);
-    }
-    return DialogueController;
-})();
+    };
 
 function DialogueTree(prompt, options, force) {
     this.prompt = prompt;

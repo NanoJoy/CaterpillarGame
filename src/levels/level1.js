@@ -3,16 +3,16 @@ var levelOne = new Level();
 
 levelOne.layout = transformOldToNewLevel([
     "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-    "g               2gggggg                                       g",
-    "g 2        gwwwwwgggggg                                       g",
-    "gggggggg   gggggggggggg                                       g",
+    "g               2gggggg3                                      g",
+    "g 2        gwwwwwgggggg  wwwww                                g",
+    "gggggggg   gggggggggggg  wwwww                                g",
     "gggggggg         gggggg                                       g",
-    "gggggggg         gggg          gggggggggggggggg               g",
-    "ggggggggj  >>>   gg         gggg                              g",
-    "ggggggggg   gg   g         gg                                 g",
-    "ggggggggg        g   r             zzzz     r                 g",
-    "ggggggggg       jg                 ggggzz                     g",
-    "ggggggggg        #           zzzzzzggggggzzzggg   ggggggggggggg",
+    "gggggggg         gggg          gggggggggggggggggggg           g",
+    "ggggggggj  >>>   gg         gggg                  g           g",
+    "ggggggggg        g         gg                     g           g",
+    "ggggggggg        g   r             zzzz     r     g           g",
+    "ggggggggg      j g                 ggggzz         g           g",
+    "ggggggggg        #t          zzzzzzggggggzzzggg   ggggggggggggg",
     "ggggggggg        gggzzzzzzzzzg                    ggggggggggggg",
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
     "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is    i      g",
@@ -23,7 +23,7 @@ var jumpTree = new DialogueTree("Thank you. I don't know if you can jump. If you
     new DialogueOption("Ok", DIALOGUE_DONE)
 ]);
 
-var whatHappenedToBoingbugTree = new DialogueTree("Two days ago this low vibration started Fluttertown. You probably can't hear it, but it seems " +
+var whatHappenedToBoingbugTree = new DialogueTree("Two days ago this low vibration started in Fluttertown. You probably can't hear it, but it seems " +
     "to have some physiological effect on Boingbugs. None of us can move! It's really a disaster. On top of that, our Stinkbugs have been driven mad by it and escaped. " +
     "My keys are upstairs. If you get them you can get out of here and explore.", [
         new DialogueOption("I'll see what I can do.", jumpTree),
@@ -47,7 +47,7 @@ var levelOneTrees = [
             new DialogueOption("I almost just got eaten but an eagle killed the bird trying to eat me.", whatHappenedToMeTree)
         ])),
         new DialogueOption("I was just almost killed by a sparrow but I got dropped here.", whatHappenedToMeTree)
-    ]),
+    ], true),
     new DialogueTree("Hurry up and get those keys. I don't know if water will hurt you. I guess you'll just have to see.", [
         new DialogueOption("Ok.", DIALOGUE_DONE)
     ], false),
@@ -74,11 +74,53 @@ var lookAheadTrees = [
             new DialogueOption("Ok.", DIALOGUE_DONE)
         ])),
         new DialogueOption("Thanks for the advice.", DIALOGUE_DONE)
-    ], true),
+    ], false),
     new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time.", [
         new DialogueOption("Ok.", DIALOGUE_DONE)
     ])
 ];
+
+var flowerTree = new DialogueTree("I'm going to let you in on a secret since times are so strange here. There are special flowers that grow here in FlutterTown. When you walk past them it feels like they are asking your permission for something. If you let them in... If you just say yes then if something bad happens to you you will wake up and find yourself as you were when you first passed the flower. Did you pass a flower like this by any chance?", [
+    new DialogueOption("Yes.", new DialogueTree("Good. Well, you can press K, or there are some spikes right there.", [new DialogueOption("Ok.", DIALOGUE_DONE)])),
+    new DialogueOption("No.", new DialogueTree("Well, I suppose you could wait here and we could die together. But I don't know how long that will take. I just ate a whole lot.", [
+        new DialogueOption("See ya.", DIALOGUE_DONE),
+        new DialogueOption("Where did you get the food?", new DialogueTree("It's over that ledge up there and down a bit. There's still a lot left.", [new DialogueOption("Ok", DIALOGUE_DONE)])),
+        new DialogueOption("How long will it take for me to die if I just sit here?", new DialogueTree("I have no idea.", [new DialogueOption("Ok.", DIALOGUE_DONE)]))
+    ]))
+])
+
+var stuckTrees = [
+    new DialogueTree("I don't think you should have come down here. I mean, I'm stuck here no matter what, but I think you are too now unless you can walk on spikes.", [
+        new DialogueOption("Uh oh. What should I do?", flowerTree),
+        new DialogueOption("Good thing I can walk on spikes.", new DialogueTree("Cool! Can you show me?", [
+            new DialogueOption("Yes, I will!", DIALOGUE_DONE),
+            new DialogueOption("Just kidding. I'm screwed. Can you help me?", flowerTree)
+        ]))
+    ]),
+    new DialogueTree("I guess you can't walk on spikes.", [
+        new DialogueOption("*Resigned sigh*", flowerTree),
+        new DialogueOption("*Defiant sigh*", flowerTree)
+    ]),
+    new DialogueTree("Still here, huh? Okay, I'll sing you a song.", [
+        new DialogueOption("Sounds good.", DIALOGUE_DONE),
+        new DialogueOption("Please don't.")
+    ])
+]
+
+stuckTrees[0].onFinish = function (game, bug, selectedOption) {
+    bug.useSecondDialogue = selectedOption == "Yes, I will!";
+}
+
+var stuckDeciders = [
+    function (game, owner, currentDialogue) {
+        return 0;
+    },
+    function (game, owner, currentDialogue) {
+        return owner.useSecondDialogue ? 1 : 2;
+    },
+    null,
+    null
+]
 
 var levelOneDeciders = [
     function (game, owner, currentDialogue) {
@@ -115,6 +157,7 @@ var lookAheadDeciders = [
 ]
 
 levelOne.dialogue = [
+    new DialogueController("stuck", stuckTrees, stuckDeciders),
     new DialogueController("lookAhead", lookAheadTrees, lookAheadDeciders),
     new DialogueController("firstBoingbug", levelOneTrees, levelOneDeciders)
 ];
