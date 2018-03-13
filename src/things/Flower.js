@@ -29,13 +29,16 @@ function Flower(game, x, y, key, name) {
         }, null, this);
         if (overlapping && !wasOverlapping) {
             wasOverlapping = true;
-            responseBox = new ResponseBox(game, dialogueTree, this);
+            if (!game.snail.firstFrame) {
+                responseBox = new ResponseBox(game, dialogueTree, this);                
+            }
         }
         if (!overlapping && this.isOn) {
             this.sprite.frame = 0;
             this.isOn = false;
             wasOverlapping = false;
         }
+        game.snail.firstFrame = false;
     };
 
     this.boxDone = function (selectedOption) {

@@ -99,7 +99,10 @@ function Initialize() {
             };
         },
         removeFromLevel: function (map, areaNumber, thing, fileMap) {
-            map.layouts[areaNumber][thing.location[0]][thing.location[1]] = 'o';
+            console.log(map);
+            console.log(areaNumber);
+            console.log(fileMap);
+            map.layouts[areaNumber][thing.location[0]][thing.location[1]] = ' ';
             fileMap.push({
                 a: areaNumber,
                 x: thing.location[1],

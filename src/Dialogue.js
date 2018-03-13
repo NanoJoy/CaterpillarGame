@@ -56,6 +56,10 @@ var DialogueOption = (function () {
 
 var DIALOGUE_DONE = new DialogueTree("DONE", []);
 
+var DEFAULT_FIRST_DECIDER = function (game, owner, currentDialogue) {
+    return 0;
+};
+
 var responseTrees = {
     jumpExplainer: {
         directions: {

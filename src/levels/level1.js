@@ -3,19 +3,19 @@ var levelOne = new Level();
 
 levelOne.layout = transformOldToNewLevel([
     "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-    "g               2gggggg3                                      g",
-    "g 2        gwwwwwgggggg  wwwww                                g",
-    "gggggggg   gggggggggggg  wwwww                                g",
-    "gggggggg         gggggg                                       g",
+    "g               2gggggg3           g                         2g",
+    "g 2        gwwwwwgggggg  wwwww     g  b         ggggggggg  gggg",
+    "gggggggg   gggggggggggg  wwwww     ggggg        g g       @ s g",
+    "gggggggg         gggggg          bi    s     b  g.g  gggggggggg",
     "gggggggg         gggg          gggggggggggggggggggg           g",
-    "ggggggggj  >>>   gg         gggg                  g           g",
+    "ggggggggj  >>>>  gg         gggg                  ggg>>><<<g  g",
     "ggggggggg        g         gg                     g           g",
-    "ggggggggg        g   r             zzzz     r     g           g",
-    "ggggggggg      j g                 ggggzz         g           g",
-    "ggggggggg        #t          zzzzzzggggggzzzggg   ggggggggggggg",
-    "ggggggggg        gggzzzzzzzzzg                    ggggggggggggg",
+    "ggggggggg        g   r             zzzz     r     g  g>>>><<<<g",
+    "ggggggggg      j g                 ggggzz     t   g    gg% 2 %g",
+    "ggggggggg        #t          zzzzzzggggggzzzggg   g    gg     g",
+    "ggggggggg        gggzzzzzzzzzg                    @    i   b  g",
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is    i      g",
+    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is  s i      g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
 
@@ -64,68 +64,9 @@ var levelOneTrees = [
     ], false)
 ];
 
-levelOneTrees[0].onFinish = function (game, character, selectedOption) { 
-    console.log("You chose " + selectedOption);
-}
-
-var lookAheadTrees = [
-    new DialogueTree("If you are unsure what to do, it is wise to pause and take a look around. You can look around by holding SHIFT and using the arrow keys.", [
-        new DialogueOption("Do you need food also?", new DialogueTree("Food would be nice, but I try to appreciate my memories of when I wasn't starving.", [
-            new DialogueOption("Ok.", DIALOGUE_DONE)
-        ])),
-        new DialogueOption("Thanks for the advice.", DIALOGUE_DONE)
-    ], false),
-    new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time.", [
-        new DialogueOption("Ok.", DIALOGUE_DONE)
-    ])
-];
-
-var flowerTree = new DialogueTree("I'm going to let you in on a secret since times are so strange here. There are special flowers that grow here in FlutterTown. When you walk past them it feels like they are asking your permission for something. If you let them in... If you just say yes then if something bad happens to you you will wake up and find yourself as you were when you first passed the flower. Did you pass a flower like this by any chance?", [
-    new DialogueOption("Yes.", new DialogueTree("Good. Well, you can press K, or there are some spikes right there.", [new DialogueOption("Ok.", DIALOGUE_DONE)])),
-    new DialogueOption("No.", new DialogueTree("Well, I suppose you could wait here and we could die together. But I don't know how long that will take. I just ate a whole lot.", [
-        new DialogueOption("See ya.", DIALOGUE_DONE),
-        new DialogueOption("Where did you get the food?", new DialogueTree("It's over that ledge up there and down a bit. There's still a lot left.", [new DialogueOption("Ok", DIALOGUE_DONE)])),
-        new DialogueOption("How long will it take for me to die if I just sit here?", new DialogueTree("I have no idea.", [new DialogueOption("Ok.", DIALOGUE_DONE)]))
-    ]))
-])
-
-var stuckTrees = [
-    new DialogueTree("I don't think you should have come down here. I mean, I'm stuck here no matter what, but I think you are too now unless you can walk on spikes.", [
-        new DialogueOption("Uh oh. What should I do?", flowerTree),
-        new DialogueOption("Good thing I can walk on spikes.", new DialogueTree("Cool! Can you show me?", [
-            new DialogueOption("Yes, I will!", DIALOGUE_DONE),
-            new DialogueOption("Just kidding. I'm screwed. Can you help me?", flowerTree)
-        ]))
-    ]),
-    new DialogueTree("I guess you can't walk on spikes.", [
-        new DialogueOption("*Resigned sigh*", flowerTree),
-        new DialogueOption("*Defiant sigh*", flowerTree)
-    ]),
-    new DialogueTree("Still here, huh? Okay, I'll sing you a song.", [
-        new DialogueOption("Sounds good.", DIALOGUE_DONE),
-        new DialogueOption("Please don't.")
-    ])
-]
-
-stuckTrees[0].onFinish = function (game, bug, selectedOption) {
-    bug.useSecondDialogue = selectedOption == "Yes, I will!";
-}
-
-var stuckDeciders = [
-    function (game, owner, currentDialogue) {
-        return 0;
-    },
-    function (game, owner, currentDialogue) {
-        return owner.useSecondDialogue ? 1 : 2;
-    },
-    null,
-    null
-]
 
 var levelOneDeciders = [
-    function (game, owner, currentDialogue) {
-        return 0;
-    },
+    DEFAULT_FIRST_DECIDER,
     function (game, owner, currentDialogue) {
         var numKeys = 0;
         for (var i = 0; i < game.snail.areaKeys.counts.length; i++) {
@@ -146,17 +87,76 @@ var levelOneDeciders = [
     null
 ];
 
+var lookAheadTrees = [
+    new DialogueTree("If you are unsure what to do, it is wise to pause and take a look around. You can look around by holding SHIFT and using the arrow keys.", [
+        new DialogueOption("Do you need food also?", new DialogueTree("Food would be nice, but I try to appreciate my memories of when I wasn't starving.", [
+            new DialogueOption("Ok.", DIALOGUE_DONE)
+        ])),
+        new DialogueOption("Thanks for the advice.", DIALOGUE_DONE)
+    ], false),
+    new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time... (God I'm hungry)", [
+        new DialogueOption("Ok.", DIALOGUE_DONE)
+    ])
+];
+
 var lookAheadDeciders = [
-    function (game, owner, currentDialogue) {
-        return 0;
-    },
+    DEFAULT_FIRST_DECIDER,
     function (game, owner, currentDialogue) {
         return 1;
     },
     null
-]
+];
+
+var flowerTree = new DialogueTree("I'm going to let you in on a secret since times are so strange here. There are special flowers that grow here in FlutterTown. When you walk past them it feels like they are asking your permission for something. If you let them in... If you just say yes then if something bad happens to you you will wake up and find yourself as you were when you first passed the flower. Did you pass a flower like this by any chance?", [
+    new DialogueOption("Yes.", new DialogueTree("Good. Well, you can press K, or there are some spikes right there.", [new DialogueOption("Ok.", DIALOGUE_DONE)])),
+    new DialogueOption("No.", new DialogueTree("Well, I suppose you could wait here and we could die together. But I don't know how long that will take. I just ate a whole lot.", [
+        new DialogueOption("See ya.", DIALOGUE_DONE),
+        new DialogueOption("Where did you get the food?", new DialogueTree("It's over that ledge up there and down a bit. There's still a lot left.", [new DialogueOption("Ok", DIALOGUE_DONE)])),
+        new DialogueOption("How long will it take for me to die if I just sit here?", new DialogueTree("I have no idea.", [new DialogueOption("Ok.", DIALOGUE_DONE)]))
+    ]))
+]);
+
+var stuckTrees = [
+    new DialogueTree("I don't think you should have come down here. I mean, I'm stuck here no matter what, but I think you are too now unless you can walk on spikes.", [
+        new DialogueOption("Uh oh. What should I do?", flowerTree),
+        new DialogueOption("Good thing I can walk on spikes.", new DialogueTree("Cool! Can you show me?", [
+            new DialogueOption("Yes, I will!", DIALOGUE_DONE),
+            new DialogueOption("Just kidding. I'm screwed. Can you help me?", flowerTree)
+        ]))
+    ]),
+    new DialogueTree("I guess you can't walk on spikes.", [
+        new DialogueOption("*Resigned sigh*", flowerTree),
+        new DialogueOption("*Defiant sigh*", flowerTree)
+    ]),
+    new DialogueTree("Still here, huh? Okay, I'll sing you a song.", [
+        new DialogueOption("Sounds good.", DIALOGUE_DONE),
+        new DialogueOption("Please don't.", DIALOGUE_DONE)
+    ])
+];
+
+stuckTrees[0].onFinish = function (game, bug, selectedOption) {
+    bug.useSecondDialogue = selectedOption === "Yes, I will!";
+};
+
+var stuckDeciders = [
+    function (game, owner, currentDialogue) {
+        return game.snail.areaKeys.counts[1] > 0 ? 2 : 0;
+    },
+    function (game, owner, currentDialogue) {
+        return owner.useSecondDialogue ? 1 : 2;
+    },
+    null,
+    null
+];
+
+var redDragTrees = [
+    new DialogueTree("RedDrags are gentle beasts. They will carry you as far as you like in one direction. Just use UP and DOWN to control them. And this is very important: press B if you want them to drop you. Also, if they hit a wall face first they will probably get scared and fly away.", [
+        new DialogueOption("Thanks for the info.", DIALOGUE_DONE)
+    ])
+];
 
 levelOne.dialogue = [
+    new DialogueController("redDrags", redDragTrees, [DEFAULT_FIRST_DECIDER, null]),
     new DialogueController("stuck", stuckTrees, stuckDeciders),
     new DialogueController("lookAhead", lookAheadTrees, lookAheadDeciders),
     new DialogueController("firstBoingbug", levelOneTrees, levelOneDeciders)

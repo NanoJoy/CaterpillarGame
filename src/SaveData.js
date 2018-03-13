@@ -8,6 +8,7 @@ var SaveData = {
         colors: [],
         counts: []
     },
+    lichenCount: 0,
     powerups: []
 };
 console.log(SaveData);

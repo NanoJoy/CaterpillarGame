@@ -87,6 +87,7 @@ function GameState(game) {
         invisibles: [],
         dragonflies: [],
         leaves: [],
+        lichens: [],
         keys: [],
         locks: [],
         powerups: [],
@@ -609,7 +610,7 @@ function GameState(game) {
                     snail.areaKeys.counts[colorIndex] += 1;
                 }
                 keySprite.destroy();
-                Snail.removeFromLevel(map, areaNumber, this, fileMap);
+                Snail.removeFromLevel(map, areaNumber, this, fileMap)
                 keyCounters[color].increase();
             }, null, this);
         };
@@ -780,6 +781,7 @@ function GameState(game) {
         this.direction = 'right';
         this.isDragging = false;
         this.touchingGround = false;
+        this.firstFrame = true;
         game.physics.arcade.enable(this.sprite);
         this.sprite.animations.add('walk_right', Snail.makeAnimationArray(0, 5, false), 5, true);
         this.sprite.animations.add('walk_left', Snail.makeAnimationArray(6, 11, false), 5, true);
@@ -796,6 +798,7 @@ function GameState(game) {
             colors: [],
             counts: []
         };
+        this.lichenCount = 0;
         this.powerups = [];
         this.tempPowerups = [];
         this.hiding = {
@@ -1290,6 +1293,7 @@ function GameState(game) {
                 this.curRedDrag.flyAway();
             }
             arrays.boingbugs.forEach(function (boingbug) { boingbug.resetDialogueOnPlayerDeath(); });
+            this.lichenCount = SaveData.lichenCount;
             timer.add(Phaser.Timer.SECOND * 3, resetLevel);
             timer.start();
         };
@@ -1631,6 +1635,7 @@ function GameState(game) {
         SaveData.lampName = arrays.flowers[0].name;
         SaveData.lampPos = [areaNumber, Math.floor(arrays.flowers[0].sprite.y / 50) + 1, Math.floor(arrays.flowers[0].sprite.x / 50) - 2];
         SaveData.keysHad = snail.keysHad;
+        SaveData.lichenCount = snail.lichenCount;
         SaveData.powerups = snail.powerups;
         SaveData.dialogueStates = {};
         Snail.dialogues[areaNumber].forEach(function (controller) {
@@ -1801,6 +1806,11 @@ function GameState(game) {
                     case 'i':
                         currentTile = new Invisible(j, i);
                         arrays.invisibles.push(currentTile);
+                        break;
+                    case '%':
+                        console.log(keyCounters.lichens);
+                        currentTile = new Lichen(game, j, i, map, areaNumber, fileMap);
+                        arrays.lichens.push(currentTile);
                         break;
                     case 'l':
                         spriteKey = 'leaf';
@@ -2096,6 +2106,8 @@ function GameState(game) {
         setUpLevel(map.layouts[areaNumber]);
         keyCounters.yellow = new CountDisplay(10, 10, "yellow_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("yellow")] || 0);
         keyCounters.blue = new CountDisplay(50, 10, "blue_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("blue")] || 0);
+        keyCounters.lichen = new CountDisplay(90, 10, "yolo", SaveData.lichenCount);
+        arrays.lichens.forEach(function (lichen) { lichen.counter = keyCounters.lichen; });
         if (SaveData.powerups.indexOf("shoot") > -1) {
             keyCounters.ammo = new CountDisplay(90, 10, "flower_bullet", SaveData.ammo || 0);
         }
