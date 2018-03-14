@@ -6,14 +6,14 @@ levelOne.layout = transformOldToNewLevel([
     "g               2gggggg3           g                         2g",
     "g 2        gwwwwwgggggg  wwwww     g  b         ggggggggg  gggg",
     "gggggggg   gggggggggggg  wwwww     ggggg        g g       @ s g",
-    "gggggggg         gggggg          bi    s     b  g.g  gggggggggg",
+    "gggggggg         gggggg          bi    s    ib  g.g  gggggggggg",
     "gggggggg         gggg          gggggggggggggggggggg           g",
     "ggggggggj  >>>>  gg         gggg                  ggg>>><<<g  g",
     "ggggggggg        g         gg                     g           g",
     "ggggggggg        g   r             zzzz     r     g  g>>>><<<<g",
     "ggggggggg      j g                 ggggzz     t   g    gg% 2 %g",
     "ggggggggg        #t          zzzzzzggggggzzzggg   g    gg     g",
-    "ggggggggg        gggzzzzzzzzzg                    @    i   b  g",
+    "ggggggggg        gggzzzzzzzzzg                    @      i b  g",
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
     "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is  s i      g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
@@ -61,8 +61,26 @@ var levelOneTrees = [
     ], true),
     new DialogueTree("... Uuugghhh... So hungry...", [
         new DialogueOption("...", DIALOGUE_DONE)
+    ], false),
+    new DialogueTree("Did you manage to find the lichen?", [
+        new DialogueOption("Yes! Here you go.", new DialogueTree("Thank you so much! I think I trust you enough now to give you this PowerSeed. I hope you can use it to find the source of these vibrations.", [
+            new DialogueOption("Thanks.", DIALOGUE_DONE)
+        ])),
+        new DialogueOption("No. Sorry.", new DialogueTree("Oh... Okay.", [
+            new DialogueOption("Bye.", DIALOGUE_DONE)
+        ]))
     ], false)
 ];
+
+levelOneTrees[4].onFinish = function (game, character, selectedOption) {
+    if (selectedOption === "Thanks.") {
+        var x = character.sprite.x - 100;
+        var y = character.sprite.y;
+        var location = [y / 50, x / 50];
+        var description = "You can now pull blocks. Push yourself against a block and hold DOWN, then move left or right to pull a block."
+        game.addPowerup(x, y, "pull", location, description);
+    }
+}
 
 
 var levelOneDeciders = [
@@ -84,7 +102,18 @@ var levelOneDeciders = [
     function (game, owner, currentDialogue) {
         return currentDialogue + 1;
     },
-    null
+    function (game, owner, currentDialogue) {
+        if (game.snail.lichenCount > 0) {
+            return currentDialogue + 1;
+        }
+        return currentDialogue;
+    },
+    function (game, owner, currentDialogue) {
+        if (game.snail.lichenCount > 0) {
+            return currentDialogue;
+        }
+        return currentDialogue;
+    }
 ];
 
 var lookAheadTrees = [

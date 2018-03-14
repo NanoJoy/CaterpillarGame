@@ -99,9 +99,6 @@ function Initialize() {
             };
         },
         removeFromLevel: function (map, areaNumber, thing, fileMap) {
-            console.log(map);
-            console.log(areaNumber);
-            console.log(fileMap);
             map.layouts[areaNumber][thing.location[0]][thing.location[1]] = ' ';
             fileMap.push({
                 a: areaNumber,

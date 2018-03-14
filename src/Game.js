@@ -148,7 +148,7 @@ function GameState(game) {
             var water = null;
             if (!this.beingDragged) {
                 game.physics.arcade.collide(this.sprite, snail.sprite, function (blockSprite, snailSprite) {
-                    if (cursors.down.isDown && snailSprite.bottom === blockSprite.bottom) {
+                    if (cursors.down.isDown && snailSprite.bottom === blockSprite.bottom && snail.canPull) {
                         this.beingDragged = true;
                         blockSprite.tint = draggedColor;
                         if (blockSprite.x > snailSprite.x) {
@@ -813,6 +813,7 @@ function GameState(game) {
             wasDown: false,
             ammo: 0
         };
+        this.canPull = false;
         this.water = {
             inWater: false,
             entrySpeed: 0,
@@ -1271,21 +1272,11 @@ function GameState(game) {
                 this.sprite.scale.setTo(-1, 1);
             }
             this.sprite.play('death', spriteStuff.speed, false);
-            console.log(Snail.cleanMap);
             map.layouts[areaNumber] = JSON.parse(JSON.stringify(Snail.cleanMap.layouts[areaNumber]));
             for (i = 0; i < this.tempPowerups.length; i++) {
                 SaveData.powerups.splice(SaveData.powerups.indexOf(this.tempPowerups[i]), 1);
             }
-            for (i = 0; i < this.areaKeys.colors.length; i++) {
-                curColor = this.areaKeys.colors[i];
-                this.keysHad.counts[this.keysHad.colors.indexOf(curColor)] -= this.areaKeys.counts[i];
-            }
-            this.areaKeys = {
-                colors: [],
-                counts: []
-            };
-            keyCounters.yellow.reset();
-            keyCounters.blue.reset();
+            this.keysHad = JSON.parse(JSON.stringify(SaveData.keysHad));
             if (keyCounters.ammo) {
                 keyCounters.ammo.reset();
             }
@@ -1312,6 +1303,9 @@ function GameState(game) {
                         if (Snail.tempSave !== null) {
                             this.shooting.ammo = Snail.tempSave.ammo;
                         }
+                        break;
+                    case "pull":
+                        this.canPull = true;
                         break;
                     case "scarf":
                         this.scarf = true;
@@ -1486,7 +1480,11 @@ function GameState(game) {
         };
     }
 
-    function Powerup(x, y, key, name, location, descNumber) {
+    game.addPowerup = function (x, y, name, location, description) {
+        arrays.powerups.push(new Powerup(x, y, "powerup", name, location, description));
+    };
+
+    function Powerup(x, y, key, name, location, description) {
         this.sprite = groups.powerups.create(x, y, key);
         this.sprite.x += 25 - this.sprite.width / 2;
         this.sprite.y += 25 - this.sprite.height / 2;
@@ -1509,13 +1507,17 @@ function GameState(game) {
                             snail.shooting.canShoot = true;
                             keyCounters.ammo = new CountDisplay(90, 10, "flower_bullet", 0);
                             break;
+                        case "pull":
+                            snail.canPull = true;
+                            break;
                     }
                     snail.powerups.push(name);
                     snail.tempPowerups.push(name);
                     SaveData.powerups.push(name);
                     this.sprite.destroy();
                     Snail.removeFromLevel(map, areaNumber, this, fileMap);
-                    textbox = new ResponseBox(responseTrees[name], this);
+                    var tree = new DialogueTree(description, [new DialogueOption("Ok.", DIALOGUE_DONE)]);
+                    textbox = new ResponseBox(game, tree, this);
                     textboxShown = true;
                     game.sound.play("powerup");
                 }
@@ -1631,10 +1633,10 @@ function GameState(game) {
 
     game.goToSaves = function() {
         SaveData.newGame = false;
-        SaveData.map = fileMap;
+        SaveData.map = JSON.parse(JSON.stringify(fileMap));
         SaveData.lampName = arrays.flowers[0].name;
         SaveData.lampPos = [areaNumber, Math.floor(arrays.flowers[0].sprite.y / 50) + 1, Math.floor(arrays.flowers[0].sprite.x / 50) - 2];
-        SaveData.keysHad = snail.keysHad;
+        SaveData.keysHad = JSON.parse(JSON.stringify(snail.keysHad));
         SaveData.lichenCount = snail.lichenCount;
         SaveData.powerups = snail.powerups;
         SaveData.dialogueStates = {};
@@ -2071,7 +2073,7 @@ function GameState(game) {
 
         game.world.sendToBack(background);
         map = JSON.parse(JSON.stringify(Snail.cleanMap));
-        fileMap = SaveData.map;
+        fileMap = JSON.parse(JSON.stringify(SaveData.map));
         startTime = (new Date()).getTime();
         dummyText = game.add.text(0, 0, "hi", Snail.textStyles.boingbox);
         if (!SaveData.newGame) {
@@ -2082,6 +2084,7 @@ function GameState(game) {
             if (startArea === Snail.cleanMap.lampNames.length) {
                 startArea = -1;
             }
+            console.log(fileMap);
             for (var i = 0; i < fileMap.length; i++) {
                 map.layouts[fileMap[i].a][fileMap[i].y][fileMap[i].x] = 'o';
             }
