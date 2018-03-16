@@ -7,7 +7,7 @@ function Boingbug(game, x, y, dialogueController) {
     this.sprite.animations.add('shimmy', [0, 1], 8, true);
     this.sprite.play('shimmy');
 
-    var pressBSprite = game.add.sprite(x, y - 50, "press_b");
+    var pressBSprite = game.add.sprite(x, y - 50, spriteKeys.pressB);
     game.world.bringToTop(pressBSprite);
     pressBSprite.alpha = 0.7;
     pressBSprite.visible = false;

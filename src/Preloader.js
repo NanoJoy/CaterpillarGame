@@ -2,12 +2,14 @@ var States = window.States || {};
 var Snail = window.Snail || Initialize();
 var spriteKeys = {
     flowerLamp: "flower_lamp",
-    lichen: "lichens"
+    lichen: "lichens",
+    lichenIcon: "lichen_icon",
+    pressB: "press_b"
 };
 States.Preloader = function(game) {
     var spriteInfos = [
         {
-            key: "press_b",
+            key: spriteKeys.pressB,
             width: 50,
             height: 50
         },
@@ -202,6 +204,10 @@ States.Preloader = function(game) {
             key: spriteKeys.lichen,
             width: 50,
             height: 50
+        }, {
+            key: spriteKeys.lichenIcon,
+            width: 22,
+            height: 22
         }, {
             key: "logo",
             width: 600,

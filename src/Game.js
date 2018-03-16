@@ -2105,7 +2105,7 @@ function GameState(game) {
         setUpLevel(map.layouts[areaNumber]);
         keyCounters.yellow = new CountDisplay(10, 10, "yellow_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("yellow")] || 0);
         keyCounters.blue = new CountDisplay(50, 10, "blue_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("blue")] || 0);
-        keyCounters.lichen = new CountDisplay(90, 10, "yolo", SaveData.lichenCount);
+        keyCounters.lichen = new CountDisplay(90, 10, spriteKeys.lichenIcon, SaveData.lichenCount);
         arrays.lichens.forEach(function (lichen) { lichen.counter = keyCounters.lichen; });
         if (SaveData.powerups.indexOf("shoot") > -1) {
             keyCounters.ammo = new CountDisplay(90, 10, "flower_bullet", SaveData.ammo || 0);
