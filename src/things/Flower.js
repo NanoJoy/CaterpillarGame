@@ -6,6 +6,7 @@ function Flower(game, x, y, key, name) {
     this.name = name;
     this.isOn = false;
     
+    var responseBox = null;
     var wasOverlapping = false;
 
     var dialogueTree = new DialogueTree("Save game?", [
@@ -14,11 +15,9 @@ function Flower(game, x, y, key, name) {
     ], true);
     dialogueTree.onFinish = function (game, character, selectedOption) {
         if (selectedOption === "YES") {
-            game.goToSaves();
+            game.goToSaves(character.name);
         }
     }
-
-    var responseBox = null;
 
     this.update = function () {
         var overlapping = false;

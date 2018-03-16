@@ -1,9 +1,9 @@
 
 var levelOne = new Level();
 
-levelOne.layout = transformOldToNewLevel([
+levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-    "g               2gggggg3           g                         2g",
+    "g               2gggggg3           g                f        2g",
     "g 2        gwwwwwgggggg  wwwww     g  b         ggggggggg  gggg",
     "gggggggg   gggggggggggg  wwwww     ggggg        g g       @ s g",
     "gggggggg         gggggg          bi    s    ib  g.g  gggggggggg",
@@ -18,6 +18,8 @@ levelOne.layout = transformOldToNewLevel([
     "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is  s i      g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
+
+levelOne.lampNames = LevelUtils.createLampNames(1, 2);
 
 var jumpTree = new DialogueTree("Thank you. I don't know if you can jump. If you can, it's by pressing UP.", [
     new DialogueOption("Ok", DIALOGUE_DONE)

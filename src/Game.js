@@ -793,7 +793,8 @@ function GameState(game) {
         this.sprite.animations.add("slide_left", [40, 41], 5, true);
         this.sprite.animations.play('idle_right');
         this.sprite.inputEnabled = true;
-        this.keysHad = SaveData.keysHad;
+        console.log(SaveData.keysHad);
+        this.keysHad = JSON.parse(JSON.stringify(SaveData.keysHad));
         this.areaKeys = {
             colors: [],
             counts: []
@@ -1631,10 +1632,10 @@ function GameState(game) {
         };
     }
 
-    game.goToSaves = function() {
+    game.goToSaves = function(name) {
         SaveData.newGame = false;
         SaveData.map = JSON.parse(JSON.stringify(fileMap));
-        SaveData.lampName = arrays.flowers[0].name;
+        SaveData.lampName = name;
         SaveData.lampPos = [areaNumber, Math.floor(arrays.flowers[0].sprite.y / 50) + 1, Math.floor(arrays.flowers[0].sprite.x / 50) - 2];
         SaveData.keysHad = JSON.parse(JSON.stringify(snail.keysHad));
         SaveData.lichenCount = snail.lichenCount;
@@ -1666,6 +1667,7 @@ function GameState(game) {
         var leafCounter = 0;
         var powerupCounter = 0;
         var redDragCounter = 0;
+        var lampCounter = 0;
         var groundType = '';
         var savePos = {
             x: 0,
@@ -1783,14 +1785,13 @@ function GameState(game) {
                         break;
                     case 'f':
                         spriteKey = spriteKeys.flowerLamp;
-                        currentTile = new Flower(game, j * 50, (i - 1) * 50, spriteKey, map.lampNames[areaNumber]);
+                        currentTile = new Flower(game, j * 50, (i - 1) * 50, spriteKey, map.lampNames[areaNumber][lampCounter]);
                         arrays.flowers.push(currentTile);
-                        savePos.x = currentTile.sprite.body.position.x - 50;
-                        savePos.y = currentTile.sprite.body.position.y + 50;
-                        if (fromSave && snail !== null) {
-                            snail.sprite.x = savePos.x;
-                            snail.sprite.y = savePos.y;
+                        if (parseInt(SaveData.lampName.split(".")[1], 10) === lampCounter + 1) {
+                            savePos.x = currentTile.sprite.body.position.x - 50;
+                            savePos.y = currentTile.sprite.body.position.y + 50;
                         }
+                        lampCounter += 1;
                         break;
                     case 'g':
                         spriteKey = Snail.getGroundKey(j, i, levelLayout);
@@ -1866,7 +1867,7 @@ function GameState(game) {
                 }
             }
         }
-        if (fromSaveDeath || fromSave) {
+        if (fromSave) {
             snail.sprite.x = savePos.x;
             snail.sprite.y = savePos.y;
         }
@@ -2078,13 +2079,8 @@ function GameState(game) {
         dummyText = game.add.text(0, 0, "hi", Snail.textStyles.boingbox);
         if (!SaveData.newGame) {
             fromSave = true;
-            while (startArea < Snail.cleanMap.lampNames.length && Snail.cleanMap.lampNames[startArea] !== SaveData.lampName) {
-                startArea++;
-            }
-            if (startArea === Snail.cleanMap.lampNames.length) {
-                startArea = -1;
-            }
-            console.log(fileMap);
+            var saveAreaInfo = SaveData.lampName.split(".");
+            startArea = parseInt(saveAreaInfo[0], 10);
             for (var i = 0; i < fileMap.length; i++) {
                 map.layouts[fileMap[i].a][fileMap[i].y][fileMap[i].x] = 'o';
             }
