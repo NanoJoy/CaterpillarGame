@@ -8,6 +8,7 @@ function Flower(game, x, y, key, name) {
     
     var responseBox = null;
     var wasOverlapping = false;
+    var playerHasLeft;
 
     var dialogueTree = new DialogueTree("Save game?", [
         new DialogueOption("YES", DIALOGUE_DONE),
@@ -19,6 +20,10 @@ function Flower(game, x, y, key, name) {
         }
     }
 
+    this.init = function () {
+        playerHasLeft = !game.snail.fromSave;
+    };
+
     this.update = function () {
         var overlapping = false;
         game.physics.arcade.overlap(this.sprite, game.snail.sprite, function () {
@@ -28,7 +33,7 @@ function Flower(game, x, y, key, name) {
         }, null, this);
         if (overlapping && !wasOverlapping) {
             wasOverlapping = true;
-            if (!game.snail.firstFrame) {
+            if (playerHasLeft) {
                 responseBox = new ResponseBox(game, dialogueTree, this);                
             }
         }
@@ -36,8 +41,8 @@ function Flower(game, x, y, key, name) {
             this.sprite.frame = 0;
             this.isOn = false;
             wasOverlapping = false;
+            playerHasLeft = true;
         }
-        game.snail.firstFrame = false;
     };
 
     this.boxDone = function (selectedOption) {

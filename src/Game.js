@@ -781,7 +781,7 @@ function GameState(game) {
         this.direction = 'right';
         this.isDragging = false;
         this.touchingGround = false;
-        this.firstFrame = true;
+        this.fromSave = fromSave;
         game.physics.arcade.enable(this.sprite);
         this.sprite.animations.add('walk_right', Snail.makeAnimationArray(0, 5, false), 5, true);
         this.sprite.animations.add('walk_left', Snail.makeAnimationArray(6, 11, false), 5, true);
@@ -1879,22 +1879,18 @@ function GameState(game) {
         dummyText.destroy();
         game.camera.x = snail.sprite.x - ((Snail.GAME_WIDTH - snail.sprite.width) / 2);
         game.camera.y = snail.sprite.y - ((Snail.GAME_HEIGHT - snail.sprite.height) / 2);
+        Object.keys(arrays).forEach(function (keyy) {
+            arrays[keyy].forEach(function (item) {
+                if (item.hasOwnProperty("init")) {
+                    item.init();
+                }
+            });
+        });
         firstFrame = true;
     }
 
     function resetLevel() {
         game.state.start("Game");
-        // snail.sprite.destroy();
-        // snail = null;
-        // Object.keys(groups).forEach(function (keyy) {
-        //     if (keyy !== "topLevel") {
-        //         groups[keyy].destroy(true, true);
-        //     }
-        // });
-        // Object.keys(arrays).forEach(function (keyy) {
-        //     arrays[keyy] = [];
-        // });
-        // setUpLevel(map.layouts[areaNumber]);
     }
 
     function moveCamera() {
