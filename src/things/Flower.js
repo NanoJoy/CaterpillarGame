@@ -21,7 +21,7 @@ function Flower(game, x, y, key, name) {
     }
 
     this.init = function () {
-        playerHasLeft = !game.snail.fromSave;
+        playerHasLeft = !game.snail.fromSave || SaveData.lampName !== name;
     };
 
     this.update = function () {

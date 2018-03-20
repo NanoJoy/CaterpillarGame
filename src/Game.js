@@ -1642,7 +1642,9 @@ function GameState(game) {
         SaveData.powerups = snail.powerups;
         SaveData.dialogueStates = {};
         Snail.dialogues[areaNumber].forEach(function (controller) {
-            SaveData.dialogueStates[controller.name] = controller.currentDialogue;
+            if (!controller.firstTime) {
+                SaveData.dialogueStates[controller.name] = controller.currentDialogue;
+            }
         });
         console.log(SaveData);
         localStorage.setItem("SamIsAnIdiot", JSON.stringify(SaveData));
