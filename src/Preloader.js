@@ -6,6 +6,10 @@ var spriteKeys = {
     lichenIcon: "lichen_icon",
     pressB: "press_b"
 };
+var soundKeys = {
+    boingbugSong: "boingbug_song",
+    mainMusic1: "game_music"
+};
 States.Preloader = function(game) {
     var spriteInfos = [
         {

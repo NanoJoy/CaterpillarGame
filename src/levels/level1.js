@@ -16,7 +16,7 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggg        #t          zzzzzzggggggzzzggg   g    gg     g",
     "ggggggggg        gggzzzzzzzzzg                    @      i b  g",
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is  s i      g",
+    "gggggggggg   t ! @i   s  i@  2ggg   s    gggb    is  s i      g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
 
@@ -72,7 +72,17 @@ var levelOneTrees = [
         new DialogueOption("No. Sorry.", new DialogueTree("Oh... Okay.", [
             new DialogueOption("Bye.", DIALOGUE_DONE)
         ]))
-    ], false)
+    ], false),
+    new DialogueTree("I hope you find your way home, even if you have to slaughter thousands of stinkbugs.", [
+        new DialogueOption("Me too.", DIALOGUE_DONE),
+        new DialogueOption("Do they feel pain?", new DialogueTree("I mean, even when not in this state they are pretty dumb. Maybe if you can fix this problem you'll see what they are like when not they're not killing my friends and neighbors.", [
+            new DialogueOption("Yeah, maybe.", DIALOGUE_DONE),
+            new DialogueOption("I still feel bad about it.", new DialogueTree("Ok. Well if you'll excuse me, I'm eating here.", [
+                new DialogueOption("Ok.", DIALOGUE_DONE)
+            ]))
+        ]))
+    ]),
+    new DialogueTree("Mmmm... *slurp* *smack* MMMmmmm....", [new DialogueOption("Enjoy.", DIALOGUE_DONE)])
 ];
 
 levelOneTrees[4].onFinish = function (game, character, selectedOption) {
@@ -103,20 +113,27 @@ var levelOneDeciders = [
         return numKeys === 2 ? currentDialogue + 1 : currentDialogue;
     },
     function (game, owner, currentDialogue) {
+        if (game.snail.lichenCount === 2) {
+            return currentDialogue + 2;
+        }
         return currentDialogue + 1;
     },
     function (game, owner, currentDialogue) {
-        if (game.snail.lichenCount > 0) {
+        if (game.snail.lichenCount === 2) {
             return currentDialogue + 1;
         }
         return currentDialogue;
     },
     function (game, owner, currentDialogue) {
-        if (game.snail.lichenCount > 0) {
-            return currentDialogue;
+        if (game.snail.canPull) {
+            return currentDialogue + 1;
         }
         return currentDialogue;
-    }
+    },
+    function (game, owner, currentDialogue) {
+        return currentDialogue + 1;
+    },
+    null
 ];
 
 var lookAheadTrees = [
@@ -175,7 +192,11 @@ var stuckDeciders = [
         return game.snail.areaKeys.counts[1] > 0 ? 2 : 0;
     },
     function (game, owner, currentDialogue) {
-        return owner.useSecondDialogue ? 1 : 2;
+        if (owner.useSecondDialogue) {
+            owner.useSecondDialogue = false;
+            return 1;
+        }
+        return 2;
     },
     null,
     null

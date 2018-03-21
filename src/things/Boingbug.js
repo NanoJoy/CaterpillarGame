@@ -25,10 +25,10 @@ function Boingbug(game, x, y, dialogueController) {
                 pressBSprite.visible = true;
             }
             if (!this.textbox.showing && (dialogueController.nextIsForced(game) || game.keys.boingbugKey.isDown)) {
-                var dialogue = dialogueController.getNextDialogue(game);
+                var dialogue = dialogueController.peekNextTree(game);
                 if (dialogue !== DIALOGUE_DONE) {
                     game.sound.play("boingbug");
-                    this.textbox = new ResponseBox(game, dialogue, this);
+                    this.textbox = new ResponseBox(game, dialogueController.getNextDialogue(game), this);
                     boxShown = true;
                 }
             }

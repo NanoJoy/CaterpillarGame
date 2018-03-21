@@ -2090,6 +2090,7 @@ function GameState(game) {
                     it.setTo(savedDialogueNumber);
                 }
             });
+            snail.lichenCount = SaveData.lichenCount;
         }
         if (Snail.areaNumber === -1) {
             areaNumber = startArea;
