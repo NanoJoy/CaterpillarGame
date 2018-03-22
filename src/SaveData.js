@@ -1,6 +1,7 @@
 var SaveData = {
     newGame: true,
     dialogueStates: {},
+    areaNumber: -1,
     map: [],
     lampName: "",
     lampPos: [],
@@ -11,4 +12,3 @@ var SaveData = {
     lichenCount: 0,
     powerups: []
 };
-console.log(SaveData);

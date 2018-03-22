@@ -10,6 +10,7 @@ var SaveState = function (game) {
     var currentStorage = null;
     var file = {
         dialogueStates: {},
+        areaNumber: -1,
         map: [],
         lampName: "newgame",
         lampPos: [],
@@ -60,15 +61,13 @@ var SaveState = function (game) {
         if (currentStorage !== null && selectedButton !== newGameButton) {
             SaveData = JSON.parse(currentStorage);
         }
-        console.log(SaveData);
-        Snail.areaNumber = Snail.cleanMap.lampNames.indexOf(SaveData.lampName);
+        Snail.areaNumber = SaveData.areaNumber;
         if (Snail.areaNumber === -1) {
             Snail.areaNumber = 0;
         }
         if (selectedButton === newGameButton) {
             game.state.start("Intro");
         } else {
-
             game.state.start("Midload");
         }
     }

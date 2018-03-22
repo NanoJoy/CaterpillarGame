@@ -39,6 +39,7 @@ function GameState(game) {
     var resultsDisp = null;
     var cameraBorder = null;
     var scarfHad = false;
+    var hasSavedInThisArea = false;
     var startTime = 0;
     var areaNumber = 0;
     var gravityLevel = 300;
@@ -612,54 +613,6 @@ function GameState(game) {
                 keySprite.destroy();
                 Snail.removeFromLevel(map, areaNumber, this, fileMap)
                 keyCounters[color].increase();
-            }, null, this);
-        };
-    }
-
-    function Leaf(x, y, key, pointerNumber) {
-        this.sprite = groups.leaves.create(x, y, key);
-        game.physics.arcade.enable(this.sprite);
-        this.sprite.animations.add('shine', Snail.makeAnimationArray(0, 9, false));
-        this.sprite.animations.play('shine', 8, true);
-        game.add.tween(this.sprite).to({ y: this.sprite.y + 5 }, 300, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
-        this.sprite.body.immovable = true;
-        this.sprite.body.moves = false;
-        this.pointer = map.leafPointers[areaNumber][pointerNumber];
-        this.update = function () {
-            game.physics.arcade.overlap(this.sprite, snail.sprite, function (leafSprite, playerSprite) {
-                var oldY = playerSprite.y;
-                var oldX = playerSprite.x;
-                var cocAnim = null;
-                playerSprite.destroy();
-                snail.sprite = game.add.sprite(oldX, oldY - 20, "coccoon");
-                cocAnim = snail.sprite.animations.add("make");
-                snail.sprite.play("make", 20, false);
-                if (snail.direction === "left") {
-                    snail.sprite.x += snail.sprite.width;
-                    snail.sprite.scale.setTo(-1, 1);
-                }
-                cocAnim.onComplete.addOnce(function () {
-                    Snail.areaNumber = this.pointer;
-                    fromSave = false;
-                    fromSaveDeath = false;
-                    if (Snail.loadedMusics.indexOf(Snail.cleanMap.musics[Snail.areaNumber]) === -1) {
-                        Snail.tempSave = {
-                            map: fileMap,
-                            keysHad: snail.keysHad,
-                            powerups: snail.powerups,
-                            ammo: snail.shooting.ammo
-                        };
-                        game.state.start("Midload");
-                    } else {
-                        areaNumber = Snail.areaNumber;
-                        Snail.areaNumber = -1;
-                        resetLevel();
-                    }
-                }, this);
-                game.sound.play("leaf");
-                snail.alive = false;
-                this.sprite.destroy();
-                delete this.update;
             }, null, this);
         };
     }
@@ -1634,6 +1587,7 @@ function GameState(game) {
 
     game.goToSaves = function(name) {
         SaveData.newGame = false;
+        SaveData.areaNumber = areaNumber;
         SaveData.map = JSON.parse(JSON.stringify(fileMap));
         SaveData.lampName = name;
         SaveData.lampPos = [areaNumber, Math.floor(arrays.flowers[0].sprite.y / 50) + 1, Math.floor(arrays.flowers[0].sprite.x / 50) - 2];
@@ -1819,7 +1773,7 @@ function GameState(game) {
                         break;
                     case 'l':
                         spriteKey = 'leaf';
-                        currentTile = new Leaf(j * 50 + 10, i * 50 + 11, spriteKey, leafCounter);
+                        currentTile = new Leaf(game, j * 50 + 10, i * 50 + 11, spriteKey, map.leafPointers[areaNumber][leafCounter]);
                         leafCounter += 1;
                         arrays.leaves.push(currentTile);
                         break;
@@ -1870,8 +1824,12 @@ function GameState(game) {
             }
         }
         if (fromSave) {
-            snail.sprite.x = savePos.x;
-            snail.sprite.y = savePos.y;
+            console.log(hasSavedInThisArea);
+            if (hasSavedInThisArea) {
+                snail.sprite.x = savePos.x;
+                snail.sprite.y = savePos.y;
+            }
+            snail.lichenCount = SaveData.lichenCount;
         }
         game.world.bringToTop(groups.waters);
         game.world.bringToTop(groups.bridges);
@@ -2027,7 +1985,6 @@ function GameState(game) {
     }
 
     this.create = function () {
-        var startArea = 0;
         var tellToPause = null;
         var timer = null;
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -2078,7 +2035,8 @@ function GameState(game) {
         if (!SaveData.newGame) {
             fromSave = true;
             var saveAreaInfo = SaveData.lampName.split(".");
-            startArea = parseInt(saveAreaInfo[0], 10);
+            var lastSavedAreaNum = parseInt(saveAreaInfo[0], 10) - 1;
+            hasSavedInThisArea = lastSavedAreaNum === Snail.areaNumber;
             for (var i = 0; i < fileMap.length; i++) {
                 map.layouts[fileMap[i].a][fileMap[i].y][fileMap[i].x] = 'o';
             }
@@ -2090,13 +2048,8 @@ function GameState(game) {
                     it.setTo(savedDialogueNumber);
                 }
             });
-            snail.lichenCount = SaveData.lichenCount;
         }
-        if (Snail.areaNumber === -1) {
-            areaNumber = startArea;
-        } else {
-            areaNumber = Snail.areaNumber;
-        }
+        areaNumber = Snail.areaNumber;
         if (SaveData.powerups.indexOf("scarf") > -1) {
             scarfHad = true;
         }
