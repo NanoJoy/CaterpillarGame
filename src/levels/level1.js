@@ -15,8 +15,8 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggg      j g                 ggggzz     t   g    gg% 2 %g",
     "ggggggggg        #t          zzzzzzggggggzzzggg   g    gg     g",
     "ggggggggg        gggzzzzzzzzzg                    @      i b  g",
-    "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is  s i    l g",
+    "gggggggggj%  gggggg      gg   t b         f      jggggggggggggg",
+    "gggggggggg%  t2!2@i   s  i@   ggg   s    gggb    is  s i    l g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
 
@@ -91,6 +91,7 @@ levelOneTrees[4].onFinish = function (game, character, selectedOption) {
         var y = character.sprite.y;
         var location = [y / 50, x / 50];
         var description = "You can now pull blocks. Push yourself against a block and hold DOWN, then move left or right to pull a block."
+        game.snail.changeLichenAmount(-1);
         game.addPowerup(x, y, "pull", location, description);
     }
 }

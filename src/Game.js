@@ -371,15 +371,15 @@ function GameState(game) {
         }
         countDisplay.fixedToCamera = true;
         icon.fixedToCamera = true;
+        this.changeAmount = function (amount) {
+            count = Math.max(count + amount, 0);
+            countDisplay.text = count.toString();
+        };
         this.increase = function () {
-            count += 1;
-            countDisplay.text = count;
+            this.changeAmount(1);
         };
         this.decrease = function () {
-            if (count > 0) {
-                count -= 1;
-                countDisplay.text = count.toString();
-            }
+            this.changeAmount(-1);
         };
         this.reset = function () {
             count = 0;
@@ -910,6 +910,10 @@ function GameState(game) {
             if (this.alive && !this.curRedDrag && !curRamp && !this.sliding && !game.physics.arcade.isPaused) {
                 this.aliveUpdate();
             }
+        };
+        this.changeLichenAmount = function(amount) {
+            this.lichenCount = Math.max(this.lichenCount - amount, 0);
+            keyCounters.lichen.changeAmount(amount);
         };
         this.redDragUpdate = function() {
             const MAX_SPEED_X = 300;
@@ -1767,7 +1771,6 @@ function GameState(game) {
                         arrays.invisibles.push(currentTile);
                         break;
                     case '%':
-                        console.log(keyCounters.lichens);
                         currentTile = new Lichen(game, j, i, map, areaNumber, fileMap);
                         arrays.lichens.push(currentTile);
                         break;
