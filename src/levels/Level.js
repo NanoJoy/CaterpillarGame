@@ -6,7 +6,18 @@ function Level(layout, dialogue, redDragDirections, lampNames) {
 }
 
 LevelUtils = {
-    transformOldToNewLevel: function(newLevel) {
+    transformOldToNewLevel: function(newLevel, levelHeight) {
+        if (levelHeight !== undefined) {
+            var numSpans = newLevel.length / levelHeight;
+            var temp = [];
+            for (var i = 0; i < levelHeight; i++) {
+                temp[i] = "";
+                for (var j = 0; j < numSpans; j++) {
+                    temp[i] += newLevel[(j * levelHeight) + i];
+                }
+            }
+            newLevel = temp;
+        }
         var oldLevel = [];
         newLevel.forEach(function (it) {
             oldLevel.push(it.split(""));
@@ -22,5 +33,10 @@ LevelUtils = {
         return lampNames;
     }
 }
+
+RedDragDirections = {
+    RIGHT: "right",
+    LEFT: "left"
+};
 
 

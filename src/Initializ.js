@@ -178,15 +178,7 @@ function Initialize() {
                 //     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g']
                 // ],
                 levelOne.layout,
-                [//0
-                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                    ['g', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                    ['g', 'o', '!', 'o', 'o', '.', '.', '.', 'o', 'o', 'o', 'o', 'g', 'o', 'o', 'o', 'g'],
-                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'o', 'o', 'o', 'o', 't', 'o', 'o', 'l', 'g'],
-                    ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
-                ],
+                levelTwo.layout,
                 [//1
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
@@ -443,9 +435,9 @@ function Initialize() {
                 [15]
             ],
             musics: ["game_music", null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
-            lampNames: [levelOne.lampNames, null, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
+            lampNames: [levelOne.lampNames, levelTwo.lampNames, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
             powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-            redDragDirections: [levelOne.redDragDirections]
+            redDragDirections: [levelOne.redDragDirections, levelTwo.redDragDirections]
         }
     }
 };

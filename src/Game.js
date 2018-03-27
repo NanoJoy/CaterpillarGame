@@ -361,32 +361,6 @@ function GameState(game) {
         };
     }
 
-    function CountDisplay(x, y, key, count) {
-        var countDisplay = game.add.text(x + 26, y + 2, count.toString(), Snail.textStyles.boingbox);
-        var icon = groups.topLevel.create(x, y, key);
-        groups.topLevel.add(countDisplay);
-        if (key === "flower_bullet") {
-            icon.y += (22 - icon.height) / 2;
-            countDisplay.x = icon.x + icon.width + 4;
-        }
-        countDisplay.fixedToCamera = true;
-        icon.fixedToCamera = true;
-        this.changeAmount = function (amount) {
-            count = Math.max(count + amount, 0);
-            countDisplay.text = count.toString();
-        };
-        this.increase = function () {
-            this.changeAmount(1);
-        };
-        this.decrease = function () {
-            this.changeAmount(-1);
-        };
-        this.reset = function () {
-            count = 0;
-            countDisplay.text = "0";
-        }
-    }
-
     function DecFlow(x, y) {
         var colors = ['yellow', 'pink'];
         var key = colors[Math.floor(Math.random() * 2)] + '_flow';
@@ -1463,7 +1437,7 @@ function GameState(game) {
                             break;
                         case 'shoot':
                             snail.shooting.canShoot = true;
-                            keyCounters.ammo = new CountDisplay(90, 10, "flower_bullet", 0);
+                            keyCounters.ammo = new CountDisplay(game, 90, 10, "flower_bullet", 0);
                             break;
                         case "pull":
                             snail.canPull = true;
@@ -2058,12 +2032,12 @@ function GameState(game) {
         }
         game.sound.destroy();
         setUpLevel(map.layouts[areaNumber]);
-        keyCounters.yellow = new CountDisplay(10, 10, "yellow_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("yellow")] || 0);
-        keyCounters.blue = new CountDisplay(50, 10, "blue_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("blue")] || 0);
-        keyCounters.lichen = new CountDisplay(90, 10, spriteKeys.lichenIcon, SaveData.lichenCount);
+        keyCounters.yellow = new CountDisplay(game, 10, 10, "yellow_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("yellow")] || 0);
+        keyCounters.blue = new CountDisplay(game, 50, 10, "blue_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("blue")] || 0);
+        keyCounters.lichen = new CountDisplay(game, 90, 10, spriteKeys.lichenIcon, SaveData.lichenCount);
         arrays.lichens.forEach(function (lichen) { lichen.counter = keyCounters.lichen; });
         if (SaveData.powerups.indexOf("shoot") > -1) {
-            keyCounters.ammo = new CountDisplay(90, 10, "flower_bullet", SaveData.ammo || 0);
+            keyCounters.ammo = new CountDisplay(game, 90, 10, "flower_bullet", SaveData.ammo || 0);
         }
         game.sound.play(Snail.cleanMap.musics[areaNumber], 1, true);
     };
