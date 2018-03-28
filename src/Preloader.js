@@ -5,6 +5,7 @@ var spriteKeys = {
     lichen: "lichens",
     lichenIcon: "lichen_icon",
     pressB: "press_b",
+    smashDeath: "smashdeath",
     speedboost: "speedboost"
 };
 var soundKeys = {
@@ -241,6 +242,10 @@ States.Preloader = function(game) {
             key: "scarf",
             width: 50,
             height: 50
+        }, {
+            key: spriteKeys.smashDeath,
+            width: 52,
+            height: 30
         }, {
             key: 'soft_ground',
             width: 50,

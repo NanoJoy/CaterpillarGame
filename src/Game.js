@@ -663,6 +663,8 @@ function GameState(game) {
             var rightPos = false;
             var rightHeight = (snail.sprite.bottom <= this.sprite.top);
             var playerLeft = (snail.sprite.x < this.sprite.x);
+            //console.log(snail.sprite.body.velocity.x);
+                //snail.getHurt(3);
             if (snail.touchingGround) {
                 if (playerLeft) {
                     rightPos = (this.sprite.x - snail.sprite.x < snail.sprite.width - MARGIN);
@@ -1090,6 +1092,7 @@ function GameState(game) {
                 }
             }, onTop, this);
             if (curBoost) {
+                game.camera.x = Math.min(this.sprite.x - 150, game.camera.x + 10)
                 runningSpeed = 0;
                 boostSpeed = Math.min(boostSpeed + 100, 500);
             } else if (this.sprite.body.velocity.x === 0) {
@@ -1097,6 +1100,10 @@ function GameState(game) {
             } else {
                 var amount = this.touchingGround ? -10 : -2;
                 boostSpeed += amount * Math.sign(boostSpeed);
+            }
+
+            if (impartedVelocity !== 0) {
+                boostSpeed = 0;
             }
 
             this.sprite.body.velocity.x = runningSpeed + impartedVelocity + boostSpeed;
@@ -1188,6 +1195,8 @@ function GameState(game) {
             var height = this.sprite.height;
             var facingLeft = (this.direction === 'left');
             var spriteStuff = this.touchingGround ? { key: 'caterpillar_death', speed: 10 } : { key: 'banana', speed: 20 };
+            
+            //spriteStuff = { key: spriteKeys.smashDeath, speed: 30 };
             var curColor = '';
             var i = 0;
             if (facingLeft) {

@@ -22,7 +22,6 @@ function SpeedBoost(game, x, y, direction, layout) {
         this.sprite.x -= this.sprite.width;
         key = key.replace("left", "right");
     }
-    console.log(key);
     this.sprite.animations.add("move", keyToAnims[key], 10, true);
     this.sprite.play("move");
 }

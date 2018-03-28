@@ -55,7 +55,7 @@ function Initialize() {
             return key;
         },
         getSpikesKey: function (x, y, levelLayout) {
-            var coverString = "gz<>c";
+            var coverString = "gz<>c{}";
             var key = "spikes";
             var sides = {
                 left: false,
