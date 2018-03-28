@@ -22,7 +22,6 @@ LevelUtils = {
         newLevel.forEach(function (it) {
             oldLevel.push(it.split(""));
         })
-        console.log(oldLevel);
         return oldLevel;
     },
     createLampNames: function(levelNumber, numLamps) {

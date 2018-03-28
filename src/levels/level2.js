@@ -1,11 +1,11 @@
 var levelTwo = new Level();
 
-levelTwo.lampNames = LevelUtils.createLampNames(2, 1);
+levelTwo.lampNames = LevelUtils.createLampNames(2, 0);
 
 levelTwo.layout = LevelUtils.transformOldToNewLevel([
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "g                                                                                                   ",
-    "g! f                                                                                                ",
+    "g!                                                                                                  ",
     "gggg}}}}                                                                                            ",
     "g         r                                                                                         ",
     "g                                                                                                   ",
@@ -22,7 +22,6 @@ levelTwo.layout = LevelUtils.transformOldToNewLevel([
     "                                                                                                   g",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
 ], 9);
-console.log(levelTwo.layout);
 
 levelTwo.dialogue = [];
 levelTwo.redDragDirections = [RedDragDirections.RIGHT];

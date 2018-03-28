@@ -4,7 +4,8 @@ var spriteKeys = {
     flowerLamp: "flower_lamp",
     lichen: "lichens",
     lichenIcon: "lichen_icon",
-    pressB: "press_b"
+    pressB: "press_b",
+    speedboost: "speedboost"
 };
 var soundKeys = {
     boingbugSong: "boingbug_song",
