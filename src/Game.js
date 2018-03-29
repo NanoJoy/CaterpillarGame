@@ -613,90 +613,19 @@ function GameState(game) {
         };
     }
 
-    function Spikes(x, y, key, type) {
-        var spikeStates = {
-            ON: 1,
-            OFF: 2
-        };
-        var spikeTypes = {
-            STATIC: 1,
-            START_ON: 2,
-            START_OFF: 3
-        };
-        var rate = 60,
-            changeCounter = rate;
-        this.sprite = groups.spikess.create(x, y, key);
-        game.physics.arcade.enable(this.sprite);
-        this.sprite.body.immovable = true;
-        this.sprite.body.moves = false;
-        switch (type) {
-            case 'STATIC':
-                this.type = spikeTypes.STATIC;
-                this.state = spikeStates.ON;
-                break;
-            case 'START_ON':
-                this.type = spikeTypes.START_ON;
-                this.state = spikeStates.ON;
-                break;
-            case 'START_OFF':
-                this.type = spikeTypes.START_OFF;
-                this.state = spikeStates.OFF;
-                this.sprite.frame = 1;
-                break;
-            default:
-                throw new Error(type + ' is not a valid spike type.');
-        }
-
-        this.update = function () {
-            if (this.type !== spikeTypes.STATIC) {
-                if (changeCounter === 0) {
-                    this.changeState();
-                    changeCounter = rate;
-                } else {
-                    changeCounter--;
-                }
-            }
-        };
-
-        this.playerTouch = function () {
-            var MARGIN = 10;
-            var rightPos = false;
-            var rightHeight = (snail.sprite.bottom <= this.sprite.top);
-            var playerLeft = (snail.sprite.x < this.sprite.x);
-            //console.log(snail.sprite.body.velocity.x);
-                //snail.getHurt(3);
-            if (snail.touchingGround) {
-                if (playerLeft) {
-                    rightPos = (this.sprite.x - snail.sprite.x < snail.sprite.width - MARGIN);
-                } else {
-                    rightPos = (snail.sprite.x < this.sprite.right - MARGIN);
-                }
-            } else {
-                rightPos = true;
-            }
-            if (this.state === spikeStates.ON && !snail.inPain && rightHeight && rightPos) {
-                snail.getHurt(1);
-            }
-        };
-
-        this.changeState = function () {
-            if (this.state === spikeStates.ON) {
-                this.state = spikeStates.OFF;
-                this.sprite.frame = 1;
-            } else {
-                this.state = spikeStates.ON;
-                this.sprite.frame = 0;
-            }
-        };
-    }
-
     function Player(x, y, key) {
+        var deathReasons = {
+            GROUND: "GROUND",
+            AIR: "AIR",
+            SMASH: "SMASH"
+        };
         var jumpCounter = 15;
         var wasTouching = false;
         var curRamp = null;
         var curBoost = null;
         var boostSpeed = 0;
         var rampEntrySpeed = 0;
+        this.deathReason = null;
         this.sliding = false;
         this.slipping = false;
         this.redDrag = null;
@@ -858,7 +787,7 @@ function GameState(game) {
                     }
                 }, null, this);
             }
-            if ((this.health === 0 || killKey.isDown) && this.alive) {
+            if ((this.health <= 0 || killKey.isDown) && this.alive) {
                 this.healthbar.sprite.frame = 6;
                 this.die();
             }
@@ -1108,6 +1037,11 @@ function GameState(game) {
 
             this.sprite.body.velocity.x = runningSpeed + impartedVelocity + boostSpeed;
 
+            if (this.sprite.body.velocity.x > 100 && this.sprite.body.touching.right) {
+                this.deathReason = deathReasons.SMASH;
+                this.getHurt(3);
+            } 
+
             this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, MAXSPEED);
             if (velocityX === 0) {
                 this.sprite.play('idle_' + this.direction);
@@ -1194,9 +1128,16 @@ function GameState(game) {
             var x = this.sprite.body.position.x;
             var height = this.sprite.height;
             var facingLeft = (this.direction === 'left');
-            var spriteStuff = this.touchingGround ? { key: 'caterpillar_death', speed: 10 } : { key: 'banana', speed: 20 };
+            var spriteStuff;
+            switch (this.deathReason) {
+                case deathReasons.SMASH:
+                    spriteStuff = { key: spriteKeys.smashDeath, speed: 20 };
+                    break;
+                default:
+                    spriteStuff = this.touchingGround ? { key: spriteKeys.groundDeath, speed: 10 } 
+                    : { key: spriteKeys.airDeath, speed: 20 };
+            }
             
-            //spriteStuff = { key: spriteKeys.smashDeath, speed: 30 };
             var curColor = '';
             var i = 0;
             if (facingLeft) {
@@ -1225,8 +1166,7 @@ function GameState(game) {
             }
             arrays.boingbugs.forEach(function (boingbug) { boingbug.resetDialogueOnPlayerDeath(); });
             this.lichenCount = SaveData.lichenCount;
-            timer.add(Phaser.Timer.SECOND * 3, resetLevel);
-            timer.start();
+            this.sprite.animations.currentAnim.onComplete.add(resetLevel);
         };
         this.loadPowerups = function (powerups) {
             var name = '';
@@ -1638,12 +1578,12 @@ function GameState(game) {
                         break;
                     case '>':
                         spriteKey = Snail.getSpikesKey(j, i, levelLayout);
-                        currentTile = new Spikes(j * 50, i * 50, spriteKey, 'START_ON');
+                        currentTile = new Spikes(game, j * 50, i * 50, spriteKey, 'START_ON');
                         arrays.spikes.push(currentTile);
                         break;
                     case '<':
                         spriteKey = Snail.getSpikesKey(j, i, levelLayout);
-                        currentTile = new Spikes(j * 50, i * 50, spriteKey, 'START_OFF');
+                        currentTile = new Spikes(game, j * 50, i * 50, spriteKey, 'START_OFF');
                         arrays.spikes.push(currentTile);
                         break;
                     case '_':
@@ -1772,7 +1712,7 @@ function GameState(game) {
                         break;
                     case 'z':
                         spriteKey = Snail.getSpikesKey(j, i, levelLayout);
-                        currentTile = new Spikes(j * 50, i * 50, spriteKey, 'STATIC');
+                        currentTile = new Spikes(game, j * 50, i * 50, spriteKey, 'STATIC');
                         arrays.spikes.push(currentTile);
                         break;
                     default:

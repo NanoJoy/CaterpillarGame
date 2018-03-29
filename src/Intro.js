@@ -1,6 +1,5 @@
 var States = window.States || {};
 States.Intro = function (game) {
-    var background;
     var pressEnterText;
     var enterKey;
     var skipText
@@ -35,11 +34,11 @@ States.Intro = function (game) {
         storyText = game.add.text(50, 50, story[storyCount], { fill: "white", font: "20px VT323" });
         storyText.wordWrap = true;
         storyText.wordWrapWidth = Snail.GAME_WIDTH - 100;
+        Snail.centerThing(storyText);
     }
 
     this.create = function() {
-        background = game.add.tileSprite(0, 0, Snail.GAME_WIDTH, Snail.GAME_HEIGHT, "menu_background");
-        background.tint = 0xc6c6c6;
+        game.stage.backgroundColor = 0x280051;
 
         pressEnterText = game.add.text(0, 0, "Press Enter", { fill: "white", font: "30px VT323" });
         Snail.centerThing(pressEnterText);

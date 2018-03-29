@@ -1,7 +1,9 @@
 var States = window.States || {};
 var Snail = window.Snail || Initialize();
 var spriteKeys = {
+    airDeath: "banana",
     flowerLamp: "flower_lamp",
+    groundDeath: "caterpillar_death",
     lichen: "lichens",
     lichenIcon: "lichen_icon",
     pressB: "press_b",

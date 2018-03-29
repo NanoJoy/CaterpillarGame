@@ -204,7 +204,7 @@ var stuckDeciders = [
 ];
 
 var redDragTrees = [
-    new DialogueTree("RedDrags are gentle beasts. They will carry you as far as you like in one direction. Just use UP and DOWN to control them. And this is very important: press B if you want them to drop you. Also, if they hit a wall face first they will probably get scared and fly away.", [
+    new DialogueTree("RedDrags are gentle beasts. They will carry you as far as you like in one direction. Just use UP and DOWN to control them. And this is very important: press D if you want them to drop you. Also, if they hit a wall face first they will probably get scared and fly away.", [
         new DialogueOption("Thanks for the info.", DIALOGUE_DONE)
     ])
 ];
