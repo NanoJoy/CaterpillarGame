@@ -1024,11 +1024,14 @@ function GameState(game) {
                 game.camera.x = Math.min(this.sprite.x - 150, game.camera.x + 10)
                 runningSpeed = 0;
                 boostSpeed = Math.min(boostSpeed + 100, 500);
-            } else if (this.sprite.body.velocity.x === 0) {
-                boostSpeed = 0;
             } else {
                 var amount = this.touchingGround ? -10 : -2;
                 boostSpeed += amount * Math.sign(boostSpeed);
+                if (this.sprite.body.velocity.x <= 0) {
+                    boostSpeed = 0;
+                } else {
+                    boostSpeed = Math.min(boostSpeed, this.sprite.body.velocity.x);
+                }
             }
 
             if (impartedVelocity !== 0) {
@@ -1037,18 +1040,18 @@ function GameState(game) {
 
             this.sprite.body.velocity.x = runningSpeed + impartedVelocity + boostSpeed;
 
-            if (this.sprite.body.velocity.x > 100 && this.sprite.body.touching.right) {
+            if (this.sprite.body.velocity.x > 100 && this.sprite.body.touching.right && this.sprite.body.touching.down) {
                 this.deathReason = deathReasons.SMASH;
                 this.getHurt(3);
             } 
 
             this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, MAXSPEED);
-            if (velocityX === 0) {
+            if (this.sprite.body.velocity.x === 0) {
                 this.sprite.play('idle_' + this.direction);
-            } else if (this.direction === 'right' && velocityX < 0) {
+            } else if (this.direction === 'right' && this.sprite.body.velocity.x < 0) {
                 this.direction = 'left';
                 this.sprite.play('walk_left');
-            } else if (this.direction === 'left' && velocityX > 0) {
+            } else if (this.direction === 'left' && this.sprite.body.velocity.x > 0) {
                 this.direction = 'right';
                 this.sprite.play('walk_right');
             }
