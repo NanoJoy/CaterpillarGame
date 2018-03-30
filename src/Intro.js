@@ -19,22 +19,39 @@ States.Intro = function (game) {
     ];
 
     function enterPressed() {
-        if (storyCount < story.length - 1) {
-            storyCount++;
-            displayStory();
-        } else {
-            game.state.start("Midload");
+        if (storyText.alpha === 1) {
+            if (storyCount < story.length - 1) {
+                storyCount++;
+                displayStory();
+            } else {
+                game.state.start("Midload");
+            }
         }
     }
 
+    function getNextStoryText() {
+        var nextStoryText = game.add.text(50, 50, story[storyCount], { fill: "white", font: "20px VT323" });
+        console.log(nextStoryText.x);
+        nextStoryText.wordWrap = true;
+        nextStoryText.wordWrapWidth = Snail.GAME_WIDTH - 100;
+        Snail.centerThing(nextStoryText);        
+        return nextStoryText;
+    }
+
     function displayStory() {
+        var staleStoryText = storyText;
         if (storyText != null) {
-            storyText.destroy();
+            game.add.tween(staleStoryText)
+                .to({ alpha: 0 }, 500, Phaser.Easing.Linear.None, true)
+                .onComplete.add(function () {
+                    staleStoryText.destroy();
+                    storyText = getNextStoryText();
+                    storyText.alpha = 0;
+                    game.add.tween(storyText).to({ alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
+                });
+        } else {
+            storyText = getNextStoryText();
         }
-        storyText = game.add.text(50, 50, story[storyCount], { fill: "white", font: "20px VT323" });
-        storyText.wordWrap = true;
-        storyText.wordWrapWidth = Snail.GAME_WIDTH - 100;
-        Snail.centerThing(storyText);
     }
 
     this.create = function() {
