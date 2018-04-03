@@ -23,6 +23,7 @@ function GameState(game) {
     var keyCounters = {
         yellow: null,
         blue: null,
+        lichen: null,
         ammo: null
     };
     var inputIsDown = null;
@@ -1040,7 +1041,7 @@ function GameState(game) {
 
             this.sprite.body.velocity.x = runningSpeed + impartedVelocity + boostSpeed;
 
-            if (this.sprite.body.velocity.x > 100 && this.sprite.body.touching.right && this.sprite.body.touching.down) {
+            if (this.sprite.body.velocity.x > 350 && this.sprite.body.touching.right && this.sprite.body.touching.down) {
                 this.deathReason = deathReasons.SMASH;
                 this.getHurt(3);
             } 
@@ -1364,52 +1365,8 @@ function GameState(game) {
     }
 
     game.addPowerup = function (x, y, name, location, description) {
-        arrays.powerups.push(new Powerup(x, y, "powerup", name, location, description));
+        arrays.powerups.push(new PowerSeed(game, x, y, name, location, description, keyCounters, map, areaNumber, fileMap));
     };
-
-    function Powerup(x, y, key, name, location, description) {
-        this.sprite = groups.powerups.create(x, y, key);
-        this.sprite.x += 25 - this.sprite.width / 2;
-        this.sprite.y += 25 - this.sprite.height / 2;
-        game.physics.arcade.enable(this.sprite);
-        this.sprite.body.gravity.y = gravityLevel * -1;
-        this.sprite.animations.add('glimmer', Snail.makeAnimationArray(0, 2, false), 10, true);
-        this.sprite.play('glimmer');
-        this.location = location;
-        var textbox = null;
-        var textboxShown = false;
-
-        this.update = function () {
-            game.physics.arcade.overlap(this.sprite, snail.sprite, function (powerupSprite, snailSprite) {
-                if (!textboxShown) {
-                    switch (name) {
-                        case 'hide':
-                            snail.hiding.canHide = true;
-                            break;
-                        case 'shoot':
-                            snail.shooting.canShoot = true;
-                            keyCounters.ammo = new CountDisplay(game, 90, 10, "flower_bullet", 0);
-                            break;
-                        case "pull":
-                            snail.canPull = true;
-                            break;
-                    }
-                    snail.powerups.push(name);
-                    snail.tempPowerups.push(name);
-                    SaveData.powerups.push(name);
-                    this.sprite.destroy();
-                    Snail.removeFromLevel(map, areaNumber, this, fileMap);
-                    var tree = new DialogueTree(description, [new DialogueOption("Ok.", DIALOGUE_DONE)]);
-                    textbox = new ResponseBox(game, tree, this);
-                    textboxShown = true;
-                    game.sound.play("powerup");
-                }
-            }, null, this);
-            this.boxDone = function (a) {
-            };
-        };
-
-    }
 
     function Worm(x, y, key) {
         this.sprite = groups.worms.create(x, y, key);
@@ -1678,8 +1635,8 @@ function GameState(game) {
                         arrays.leaves.push(currentTile);
                         break;
                     case 'p':
-                        spriteKey = 'powerup';
-                        currentTile = new Powerup(j * 50, i * 50, spriteKey, map.powerupNames[areaNumber][powerupCounter], [i, j], powerupCounter);
+                        currentTile = new PowerSeed(game, j * 50, i * 50, map.powerupNames[areaNumber][powerupCounter],
+                             [i, j], powerupCounter, keyCounters, map, areaNumber, fileMap);
                         powerupCounter++;
                         arrays.powerups.push(currentTile);
                         break;

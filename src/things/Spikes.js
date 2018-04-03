@@ -48,19 +48,19 @@ function Spikes(game, x, y, key, type) {
     this.playerTouch = function () {
         var MARGIN = 10;
         var rightPos = false;
-        var rightHeight = (snail.sprite.bottom <= this.sprite.top);
-        var playerLeft = (snail.sprite.x < this.sprite.x);
-        if (snail.touchingGround) {
+        var rightHeight = (game.snail.sprite.bottom <= this.sprite.top);
+        var playerLeft = (game.snail.sprite.x < this.sprite.x);
+        if (game.snail.touchingGround) {
             if (playerLeft) {
-                rightPos = (this.sprite.x - snail.sprite.x < snail.sprite.width - MARGIN);
+                rightPos = (this.sprite.x - game.snail.sprite.x < game.snail.sprite.width - MARGIN);
             } else {
-                rightPos = (snail.sprite.x < this.sprite.right - MARGIN);
+                rightPos = (game.snail.sprite.x < this.sprite.right - MARGIN);
             }
         } else {
             rightPos = true;
         }
-        if (this.state === spikeStates.ON && !snail.inPain && rightHeight && rightPos) {
-            snail.getHurt(1);
+        if (this.state === spikeStates.ON && !game.snail.inPain && rightHeight && rightPos) {
+            game.snail.getHurt(1);
         }
     };
 

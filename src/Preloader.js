@@ -6,6 +6,7 @@ var spriteKeys = {
     groundDeath: "caterpillar_death",
     lichen: "lichens",
     lichenIcon: "lichen_icon",
+    powerSeed: "powerup",
     pressB: "press_b",
     smashDeath: "smashdeath",
     speedboost: "speedboost"
@@ -229,7 +230,7 @@ States.Preloader = function(game) {
             width: 50,
             height: 50
         }, {
-            key: 'powerup',
+            key: spriteKeys.powerSeed,
             width: 16,
             height: 16
         }, {
