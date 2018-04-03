@@ -1158,9 +1158,6 @@ function GameState(game) {
             }
             this.sprite.play('death', spriteStuff.speed, false);
             map.layouts[areaNumber] = JSON.parse(JSON.stringify(Snail.cleanMap.layouts[areaNumber]));
-            for (i = 0; i < this.tempPowerups.length; i++) {
-                SaveData.powerups.splice(SaveData.powerups.indexOf(this.tempPowerups[i]), 1);
-            }
             this.keysHad = JSON.parse(JSON.stringify(SaveData.keysHad));
             if (keyCounters.ammo) {
                 keyCounters.ammo.reset();
@@ -1458,7 +1455,6 @@ function GameState(game) {
                 SaveData.dialogueStates[controller.name] = controller.currentDialogue;
             }
         });
-        console.log(SaveData);
         localStorage.setItem("SamIsAnIdiot", JSON.stringify(SaveData));
         var saveDisplayText = game.add.text(0, 0, "Game saved", { font: "50px VT323", fill: "white" });
         Snail.centerThing(saveDisplayText);

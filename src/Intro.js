@@ -31,7 +31,6 @@ States.Intro = function (game) {
 
     function getNextStoryText() {
         var nextStoryText = game.add.text(50, 50, story[storyCount], { fill: "white", font: "20px VT323" });
-        console.log(nextStoryText.x);
         nextStoryText.wordWrap = true;
         nextStoryText.wordWrapWidth = Snail.GAME_WIDTH - 100;
         Snail.centerThing(nextStoryText);        

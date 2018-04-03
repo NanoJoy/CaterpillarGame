@@ -3,7 +3,8 @@ function PowerSeed(game, x, y, name, location, description, keyCounters, map, ar
     this.sprite.x += 25 - this.sprite.width / 2;
     this.sprite.y += 25 - this.sprite.height / 2;
     game.physics.arcade.enable(this.sprite);
-    this.sprite.body.gravity.y = gravityLevel * -1;
+    this.sprite.body.moves = false;
+    this.sprite.body.immovable = true;
     this.sprite.animations.add('glimmer', Snail.makeAnimationArray(0, 2, false), 10, true);
     this.sprite.play('glimmer');
     this.location = location;
@@ -26,6 +27,7 @@ function PowerSeed(game, x, y, name, location, description, keyCounters, map, ar
                         break;
                 }
                 game.snail.powerups.push(name);
+                console.log(game.snail.powerups);
                 game.snail.tempPowerups.push(name);
                 SaveData.powerups.push(name);
                 this.sprite.destroy();
