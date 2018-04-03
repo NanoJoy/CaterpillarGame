@@ -1,17 +1,17 @@
 var levelTwo = new Level();
 
-levelTwo.lampNames = LevelUtils.createLampNames(2, 0);
+levelTwo.lampNames = LevelUtils.createLampNames(2, 1);
 
 levelTwo.layout = LevelUtils.transformOldToNewLevel([
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-    "g                                                                                                   ",
-    "g                                                                                                   ",
-    "g                                                  ggggggggggggggggg                                ",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "g                                                                                                   ",
     "g                                                                                                   ",
     "g                                                   j    zzzzz                                      ",
-    "g !             zzgggzz       bi s s s i                                                            ",
-    "gggggg}}}}}}}}}}gggggggzzz}}}}}zzzzzzzzz}}}}}}}ggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+    "g ! f           zzgggzz       bi s s s i                                  zzzzzzzzz                 ",
+    "gggggg}}}}}}}}}}gggggggzzz}}}}}zzzzzzzzz}}}}}}}ggggggggggzzzzzzzzzzzzzzzzzgggggggggggggggggggggggggg",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "                                                                                                   g",
     "                                                                                                   g",

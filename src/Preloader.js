@@ -9,7 +9,8 @@ var spriteKeys = {
     powerSeed: "powerup",
     pressB: "press_b",
     smashDeath: "smashdeath",
-    speedboost: "speedboost"
+    speedboost: "speedboost",
+    stinkbugBlocker: "pink_flow"
 };
 var soundKeys = {
     boingbugSong: "boingbug_song",
@@ -197,10 +198,6 @@ States.Preloader = function(game) {
             key: 'housey',
             width: 200,
             height: 200
-        }, {
-            key: 'invisible',
-            width: 50,
-            height: 50
         }, {
             key: "ldr",
             width: 52,

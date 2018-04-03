@@ -529,13 +529,6 @@ function GameState(game) {
         };
     }
 
-    function Invisible(x, y) {
-        this.sprite = groups.invisibles.create(x * 50, y * 50, 'invisible');
-        game.physics.arcade.enable(this.sprite);
-        this.sprite.body.moves = false;
-        this.sprite.body.immovable = true;
-    }
-
     function Dragonfly(x, y) {
         var BOOST_LEVEL = -380;
         var sprite = groups.dragonflies.create(x * 50, y * 50, "dragonfly");
@@ -1617,7 +1610,7 @@ function GameState(game) {
                         currentTile = new Ground(game, j * 50, i * 50, spriteKey, groundType);
                         break;
                     case 'i':
-                        currentTile = new Invisible(j, i);
+                        currentTile = new StinkbugBlocker(game, j, i);
                         arrays.invisibles.push(currentTile);
                         break;
                     case '%':
