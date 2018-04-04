@@ -27,7 +27,6 @@ function PowerSeed(game, x, y, name, location, description, keyCounters, map, ar
                         break;
                 }
                 game.snail.powerups.push(name);
-                console.log(game.snail.powerups);
                 game.snail.tempPowerups.push(name);
                 SaveData.powerups.push(name);
                 this.sprite.destroy();

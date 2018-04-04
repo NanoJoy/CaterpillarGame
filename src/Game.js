@@ -1005,9 +1005,8 @@ function GameState(game) {
                 return Math.floor(playerSprite.bottom) === otherSprite.top && otherSprite.body.velocity.x !== 0;
             }
             game.physics.arcade.collide(this.sprite, groups.blocks, function (playerSprite, blockSprite) {
-                var friction = 1.0,
-                    blockVel = blockSprite.body.velocity.x,
-                    playerVel = playerSprite.body.velocity.x;
+                var friction = 1.0;
+                var blockVel = blockSprite.body.velocity.x;
                 impartedVelocity += blockVel;
                 var directionButton = runningSpeed < 0 ? cursors.left : cursors.right;
                 if (!directionButton.isDown) {

@@ -54,6 +54,9 @@ var levelOneTrees = [
     new DialogueTree("Hurry up and get those keys. I don't know if water will hurt you. I guess you'll just have to see.", [
         new DialogueOption("Ok.", DIALOGUE_DONE)
     ], false),
+    new DialogueTree("There's one more key up there.", [
+        new DialogueOption("Ok.", DIALOGUE_DONE)
+    ], true),
     new DialogueTree("Great! Thank you so much! I think I left some lichens in the next room over. Can you please bring some to me? I'm starving.", [
         new DialogueOption("I don't think I can eat lichen.", new DialogueTree("I know... I know you come from far away and I'm sorry but what else are you going to do. It would be even better if you could find the source of that terrible vibration.", [
             new DialogueOption("I'll see what I can do.", DIALOGUE_DONE),
@@ -85,7 +88,15 @@ var levelOneTrees = [
     new DialogueTree("Mmmm... *slurp* *smack* MMMmmmm....", [new DialogueOption("Enjoy.", DIALOGUE_DONE)])
 ];
 
-levelOneTrees[4].onFinish = function (game, character, selectedOption) {
+levelOneTrees[2].onFinish = function (game, character, selectedOption) {
+    game.snail.sprite.x -= 60;
+    levelOneTrees[2].force = false;
+    setTimeout(function () {
+        levelOneTrees[2].force = true;
+    }, 250);
+}
+
+levelOneTrees[5].onFinish = function (game, character, selectedOption) {
     if (selectedOption === "Thanks.") {
         var x = character.sprite.x - 100;
         var y = character.sprite.y;
@@ -94,23 +105,44 @@ levelOneTrees[4].onFinish = function (game, character, selectedOption) {
         game.snail.changeLichenAmount(-1);
         game.addPowerup(x, y, "pull", location, description);
     }
-}
+};
 
+function sumKeys(game) {
+    var numKeys = 0;
+    for (var i = 0; i < game.snail.areaKeys.counts.length; i++) {
+        numKeys += game.snail.areaKeys.counts[i];
+    }
+    return numKeys;
+}
 
 var levelOneDeciders = [
     DEFAULT_FIRST_DECIDER,
     function (game, owner, currentDialogue) {
-        var numKeys = 0;
-        for (var i = 0; i < game.snail.areaKeys.counts.length; i++) {
-            numKeys += game.snail.areaKeys.counts[i];
+        var numKeys = sumKeys(game);
+        switch (numKeys) {
+            case 2:
+                return currentDialogue + 3;
+                break;
+            case 1:
+                return currentDialogue + 2;
+                break;
         }
-        return numKeys === 2 ? currentDialogue + 2 : currentDialogue + 1;
+        return currentDialogue + 1;
     },
     function (game, owner, currentDialogue) {
-        var numKeys = 0;
-        for (var i = 0; i < game.snail.areaKeys.counts.length; i++) {
-            numKeys += game.snail.areaKeys.counts[i];
+        var numKeys = sumKeys(game);
+        switch (numKeys) {
+            case 2:
+                return currentDialogue + 2;
+                break;
+            case 1:
+                return currentDialogue + 1;
+                break;
         }
+        return currentDialogue;
+    },
+    function (game, owner, currentDialogue) {
+        var numKeys = sumKeys(game);
         return numKeys === 2 ? currentDialogue + 1 : currentDialogue;
     },
     function (game, owner, currentDialogue) {
