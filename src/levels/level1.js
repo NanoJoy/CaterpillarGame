@@ -16,7 +16,7 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggg        #t          zzzzzzggggggzzzggg   @    gg     g",
     "ggggggggg        gggzzzzzzzzzg                    g      i b  g",
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is  s i    l g",
+    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    issss i    l g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
 

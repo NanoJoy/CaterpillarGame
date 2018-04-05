@@ -1,6 +1,6 @@
 var levelTwo = new Level();
 
-levelTwo.lampNames = LevelUtils.createLampNames(2, 1);
+levelTwo.lampNames = LevelUtils.createLampNames(2, 2);
 
 levelTwo.layout = LevelUtils.transformOldToNewLevel([
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
@@ -8,8 +8,8 @@ levelTwo.layout = LevelUtils.transformOldToNewLevel([
     "g                                                                                                   ",
     "g                                                                                                   ",
     "g                                                   j    zzzzz                                      ",
-    "g ! f           zzgggzz       bi s s s i                                  zzzzzzzzz                 ",
-    "gggggg}}}}}}}}}}gggggggzzz}}}}}zzzzzzzzz}}}}}}}ggggggggggzzzzzzzzzzzzzzzzzgggggggggggggggggggggggggg",
+    "g ! f           zzgggzz       bi s s s i                                  zzzzzzzzz   f             ",
+    "gggggg}}}}}}}}}}gggggggzzz}}}}}zzzzzzzzzggg}}}}ggggggggggzzzzzzzzzzzzzzzzzgggggggggggggggggggggggggg",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",

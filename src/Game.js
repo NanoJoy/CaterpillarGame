@@ -1002,10 +1002,11 @@ function GameState(game) {
 
             var impartedVelocity = 0;
             var onTop = function (playerSprite, otherSprite) {
-                return Math.floor(playerSprite.bottom) === otherSprite.top && otherSprite.body.velocity.x !== 0;
+                var difference = Math.abs(playerSprite.bottom - otherSprite.top);
+                var withinWidth = playerSprite.right > otherSprite.left + 5 && playerSprite.left < otherSprite.right - 5;
+                return difference < 3 && withinWidth && otherSprite.body.velocity.x !== 0;
             }
             game.physics.arcade.collide(this.sprite, groups.blocks, function (playerSprite, blockSprite) {
-                var friction = 1.0;
                 var blockVel = blockSprite.body.velocity.x;
                 impartedVelocity += blockVel;
                 var directionButton = runningSpeed < 0 ? cursors.left : cursors.right;
@@ -1029,6 +1030,11 @@ function GameState(game) {
 
             if (impartedVelocity !== 0) {
                 boostSpeed = 0;
+                if (cursors.up.isDown && !shiftKey.isDown) {
+                    this.jumping = true;
+                    boostSpeed = impartedVelocity;
+                    impartedVelocity = 0;
+                }
             }
 
             this.sprite.body.velocity.x = runningSpeed + impartedVelocity + boostSpeed;
@@ -1270,8 +1276,8 @@ function GameState(game) {
         sound.play();
         this.sprite = groups.stinkbugs.create(x, y, key);
         game.physics.arcade.enable(this.sprite);
-        this.sprite.animations.add('walk_right', Snail.makeAnimationArray(0, 3, false), 5, true);
-        this.sprite.animations.add('walk_left', Snail.makeAnimationArray(4, 7, false), 5, true);
+        this.sprite.animations.add('walk_right', Snail.makeAnimationArray(0, 3, false), 9, true);
+        this.sprite.animations.add('walk_left', Snail.makeAnimationArray(4, 7, false), 9, true);
         this.sprite.play('walk_right');
         this.location = location;
         this.update = function () {
