@@ -10,7 +10,8 @@ var spriteKeys = {
     pressB: "press_b",
     smashDeath: "smashdeath",
     speedboost: "speedboost",
-    stinkbugBlocker: "pink_flow"
+    stinkbugBlocker: "pink_flow",
+    water: "water"
 };
 var soundKeys = {
     boingbugSong: "boingbug_song",
@@ -315,7 +316,7 @@ States.Preloader = function(game) {
             width: 14,
             height: 14
         }, {
-            key: 'water',
+            key: spriteKeys.water,
             width: 50,
             height: 50
         }, {

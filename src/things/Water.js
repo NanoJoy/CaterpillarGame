@@ -1,29 +1,43 @@
-function Water(game, x, y, spriteKey, above) {
+function Water(game, x, y, levelLayout) {
     var frameRate = 5;
     this.type = '';
-    this.sprite = game.groups.waters.create(x * 50, y * 50, spriteKey);
+    this.sprite = game.groups.waters.create(x * 50, y * 50, spriteKeys.water);
     this.sprite.alpha = 0.6;
     game.physics.arcade.enable(this.sprite);
     this.sprite.body.immovable = true;
     this.sprite.body.moves = false;
-    switch (above) {
-        case '_':
-            this.type = 'BRIDGE';
-            this.sprite.animations.add('move', [0, 1, 2, 3], frameRate, true);
-            this.sprite.play('move');
-            this.sprite.body.checkCollision.down = false;
-            this.sprite.body.checkCollision.right = false;
-            this.sprite.body.checkCollision.left = false;
-            break;
-        case 'w':
-            this.type = 'MIDDLE';
-            this.sprite.frame = 4;
-            break;
-        default:
-            this.type = 'TOP';
-            this.sprite.animations.add('move', [0, 1, 2, 3], frameRate, true);
-            this.sprite.play('move');
-            break;
+    var frames = [];
+    if (levelLayout[y - 1][x] !== "w") {
+        if (["w", "g"].indexOf(levelLayout[y][x - 1]) === -1) {
+            frames = [4, 5, 6, 7];
+        } else if (["w", "g"].indexOf(levelLayout[y][x + 1]) === -1) {
+            frames = [8, 9, 10, 11];
+        } else {
+            frames = [0, 1, 2, 3];
+        }
+    } else if (["w", "g"].indexOf(levelLayout[y + 1][x]) === -1) {
+        if (["w", "g"].indexOf(levelLayout[y][x - 1]) === -1) {
+            frames = [16];
+        } else if (["w", "g"].indexOf(levelLayout[y][x + 1]) === -1) {
+            frames = [17];
+        } else {
+            frames = [15];
+        }
+    } else {
+        if (["w", "g"].indexOf(levelLayout[y][x - 1]) === -1) {
+            frames = [13];
+        } else if (["w", "g"].indexOf(levelLayout[y][x + 1]) === -1) {
+            frames = [14];
+        } else {
+            frames = [12];
+        }
+    }
+    console.log(frames);
+    if (frames.length > 1) {
+        this.sprite.animations.add('move', frames, frameRate, true);   
+        this.sprite.play("move");     
+    } else {
+        this.sprite.frame = frames[0];
     }
     this.playerTouch = function (playerSprite, waterSprite) {
         var COVERED = 0.6;

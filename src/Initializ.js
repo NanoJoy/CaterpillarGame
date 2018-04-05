@@ -12,7 +12,7 @@ function Initialize() {
             thing.y = this.GAME_HEIGHT / 2 - thing.height / 2;
         },
         getGroundKey: function (x, y, levelLayout) {
-            var coverString = "gz<>c7890{}";
+            var coverString = "gz<>c7890{}w";
             var key = "ground";
             var sides = {
                 top: false,

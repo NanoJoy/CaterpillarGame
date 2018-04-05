@@ -1657,8 +1657,7 @@ function GameState(game) {
                         }
                         break;
                     case 'w':
-                        spriteKey = 'water';
-                        currentTile = new Water(game, j, i, spriteKey, levelLayout[i - 1][j]);
+                        currentTile = new Water(game, j, i, map.layouts[areaNumber]);
                         arrays.waters.push(currentTile);
                         break;
                     case 'x':
