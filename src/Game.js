@@ -1273,6 +1273,7 @@ function GameState(game) {
         var sound = game.add.audio("stinkbug", 0.6, true);
         var state = stinkbugStates.WALKING;
         var direction = directions.RIGHT;
+        var collidesWith = [groups.spikess, groups.locks, groups.grounds, groups.invisibles, groups.speedBoosts];
         sound.play();
         this.sprite = groups.stinkbugs.create(x, y, key);
         game.physics.arcade.enable(this.sprite);
@@ -1288,10 +1289,9 @@ function GameState(game) {
                     } else {
                         sound.volume = Math.min(50 / Math.sqrt(Math.pow(this.sprite.x - snail.sprite.x, 2) + Math.pow(this.sprite.y - snail.sprite.y, 2)), 1);
                     }
-                    game.physics.arcade.collide(this.sprite, groups.spikess);
-                    game.physics.arcade.collide(this.sprite, groups.locks);
-                    game.physics.arcade.collide(this.sprite, groups.grounds);
-                    game.physics.arcade.collide(this.sprite, groups.invisibles);
+                    for (var i = 0; i < collidesWith.length; i++) {
+                        game.physics.arcade.collide(this.sprite, collidesWith[i]);
+                    };
                     game.physics.arcade.overlap(this.sprite, snail.sprite, function (stinkbugSprite, playerSprite) {
                         if (snail.sliding) {
                             state = stinkbugStates.DYING;

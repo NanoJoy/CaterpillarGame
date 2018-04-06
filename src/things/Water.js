@@ -32,7 +32,6 @@ function Water(game, x, y, levelLayout) {
             frames = [12];
         }
     }
-    console.log(frames);
     if (frames.length > 1) {
         this.sprite.animations.add('move', frames, frameRate, true);   
         this.sprite.play("move");     
