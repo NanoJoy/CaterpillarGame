@@ -1,8 +1,9 @@
-function Level(layout, dialogue, redDragDirections, lampNames) {
+function Level(layout, dialogue, redDragDirections, lampNames, musicName) {
     this.layout = layout;
     this.dialogue = dialogue;
     this.redDragDirections = redDragDirections;
     this.lampNames = lampNames;
+    this.musicName = musicName;
 }
 
 LevelUtils = {

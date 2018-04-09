@@ -7,7 +7,7 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "g               2gggggg3           g  #             f        2g",
     "g 2        gwwwwwgggggg  wwwww     g  b         ggggggggg  gggg",
     "gggggggg   gggggggggggg  wwwww     gggggg       g g       @ s g",
-    "gggggggg         gggggg          bi    s    i ggg.g  gggggggggg",
+    "gggggggg         gggggg          bi    s    igggg.g  gggggggggg",
     "gggggggg         gggg          gggggggggggggggggggg           g",
     "ggggggggj  >>>>  gg         gggg                  ggg>>><<<g  g",
     "ggggggggg        g         gg                     g           g",
@@ -19,6 +19,8 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is s s ss il g",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
+
+levelOne.musicName = "game_music";
 
 levelOne.lampNames = LevelUtils.createLampNames(1, 2);
 
