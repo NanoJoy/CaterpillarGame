@@ -1911,7 +1911,7 @@ function GameState(game) {
         if (SaveData.powerups.indexOf("shoot") > -1) {
             keyCounters.ammo = new CountDisplay(game, 90, 10, "flower_bullet", SaveData.ammo || 0);
         }
-        game.sound.play(Snail.cleanMap.musics[areaNumber], 1, true);
+        game.sound.play(Snail.cleanMap.musics[areaNumber], 0.7, true);
     };
 
     this.update = function () {
