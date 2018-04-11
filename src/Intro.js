@@ -54,6 +54,8 @@ States.Intro = function (game) {
     }
 
     this.create = function() {
+        game.sound.destroy();
+        game.sound.play("story_music", 0.7, true);
         game.stage.backgroundColor = 0x280051;
 
         pressEnterText = game.add.text(0, 0, "Press Enter", { fill: "white", font: "30px VT323" });

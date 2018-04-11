@@ -362,6 +362,7 @@ States.Preloader = function(game) {
             game.load.audio(soundKeys[i], "assets/audio/" + soundKeys[i] + ".wav");
         }
         game.load.audio("menu_music", "assets/audio/menu_music.mp3");
+        game.load.audio("story_music", "assets/audio/story.mp3");
         for (i = 0; i < Snail.cleanMap.musics.length; i++) {
             if (Snail.cleanMap.musics[i] === null) {
                 j = i - 1;
