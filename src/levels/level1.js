@@ -15,9 +15,9 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggg      j g                 ggggzz     t   g    gg% 2 %g",
     "ggggggggg        gt          zzzzzzggggggzzzggg   @    gg     g",
     "ggggggggg        gggzzzzzzzzzg                    g      i b  g",
-    "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is s s ss il g",
-    "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
+    "gggggggggj   gggggg      gg   t b          f     jggggggggggggg",
+    "gggggggggg   t ! @i   s  i@   ggg   s    jgggb   is s s ss il g",
+    "gggggggggggggggggggggggggggggggggzzzzzzzzzggggggggggggggggggggg"
 ]);
 
 levelOne.musicName = "game_music";

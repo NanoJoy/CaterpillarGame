@@ -16,6 +16,12 @@ function RedDrag(game, x, y, direction) {
         this.update = function() {
             if (this.activated) {
                 var touchingGround = false;
+                for (var i = 0; i < game.arrays.locks.length; i++) {
+                    var lock = game.arrays.locks[i];
+                    game.physics.arcade.collide(this.sprite, lock.sprite, function (redDragSprite, lockSprite) {
+                        lock.playerTouch(lockSprite, game.snail.sprite);
+                    }, null, this);
+                }
                 game.physics.arcade.collide(this.sprite, game.groups.grounds, function (redDragSprite, groundSprite) {
                     touchingGround = true;
                 }, null, this);

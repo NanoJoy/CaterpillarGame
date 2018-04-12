@@ -102,6 +102,8 @@ function GameState(game) {
         waters: [],
         worms: []
     };
+    game.arrays = arrays;
+    this.arrays = arrays;
 
     game.getLevelWidth = function() {
         return map.layouts[areaNumber][0].length * TILE_SIZE;
@@ -1298,7 +1300,9 @@ function GameState(game) {
                         }
                     }, null, this);
                     game.physics.arcade.collide(this.sprite, groups.blocks, function (stinkbugSprite, blockSprite) {
-                        if ((Math.abs(blockSprite.body.velocity.x) > KILLSPEED || blockSprite.y < stinkbugSprite.y - stinkbugSprite.height + 10) && stinkbugSprite.y > blockSprite.y) {
+                        var aboveKillSpeed = Math.abs(blockSprite.body.velocity.x) > KILLSPEED;
+                        var fromAbove =  blockSprite.y < stinkbugSprite.y - stinkbugSprite.height + 10;
+                        if ((aboveKillSpeed || fromAbove || snail.curRedDrag) && stinkbugSprite.y > blockSprite.y) {
                             state = stinkbugStates.DYING;
                         }
                     }, null, this);

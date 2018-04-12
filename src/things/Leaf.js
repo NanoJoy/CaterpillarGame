@@ -17,7 +17,7 @@ function Leaf(game, x, y, key, pointer) {
             cocAnim = game.snail.sprite.animations.add("make");
             game.snail.sprite.play("make", 20, false);
             if (game.snail.direction === "left") {
-                game.snail.sprite.x += snail.sprite.width;
+                game.snail.sprite.x += game.snail.sprite.width;
                 game.snail.sprite.scale.setTo(-1, 1);
             }
             cocAnim.onComplete.addOnce(function () {
