@@ -13,15 +13,17 @@ levelTwo.layout = LevelUtils.transformOldToNewLevel([
     "gggggggggggggggggggggggggggggggggggggggg>>>gggggggwwwwwggggggggggggggggggggggggggggggggggggggggggggg",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
     "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-    "ggggggggggggggggggggggggggggggggggggggggggggggggg                 ##   gg                          g",
-    "  gggggggggggg                         gggg                  ggggggg   gg                          g",
-    "    gggggg                                @           }}}}}}}   g       g                          g",
-    "                        zzzzzzzzzzz       @           g         @    d  g                          g",
-    "ssssssss i       zzzzzzzgggggggggggzzzzzzzg           g         ggggggggg                          g",
-    "ggggggggggzzzzzzzgggggggggggggggggggggggggggggggggggggg                ggggggggggggggggggggggggggggg",
-    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggg                ggggggggggggggggggggggggggggg",
-    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
-], 9);
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+    "gggggggggggggggggggggggggggggggggggggggggggggg                 ##   gg                 ggggggggggggg",
+    "  gggggggggggg                      gggg                  ggggggg   gg 2               ggggggggggggg",
+    "    gggggg                             @           }}}}}}}   g       ggggwwg d  b@   i i s s i  gggg",
+    "                        zzzzzzzz       @           g  b      @    d  ggggwwggggggggggggggggggg  gggg",
+    " s s s s i       zzzzzzzggggggggzzzzzzzg           gwwwwww   ggggggggggggwwgg                   gggg",
+    "ggggggggggzzzzzzzggggggggggggggggggggggggggggggggggg                     ww gggggggggg             g",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggg                        gggggggggg      d      g",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggg        i d     #       gggggggggggggggggggggggg",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggzzzzggggggggggggggggggggggggggg"
+], 10);
 
 levelTwo.dialogue = [];
 levelTwo.redDragDirections = [RedDragDirections.RIGHT];
