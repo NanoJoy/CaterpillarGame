@@ -15,9 +15,9 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggg      j g                 ggggzz     t   g    gg% 2 %g",
     "ggggggggg        gt          zzzzzzggggggzzzggg   @    gg     g",
     "ggggggggg        gggzzzzzzzzzg                    g      i b  g",
-    "gggggggggj   gggggg      gg   t b          f     jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    jgggb   is s s ss il g",
-    "gggggggggggggggggggggggggggggggggzzzzzzzzzggggggggggggggggggggg"
+    "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
+    "gggggggggg   t   @i   s  i@   ggg   s    gggb    is s s ss il!g",
+    "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
 
 levelOne.musicName = "game_music";
@@ -103,7 +103,7 @@ levelOneTrees[5].onFinish = function (game, character, selectedOption) {
         var x = character.sprite.x - 100;
         var y = character.sprite.y;
         var location = [y / 50, x / 50];
-        var description = "You can now pull blocks. Push yourself against a block and hold DOWN, then move left or right to pull a block."
+        var description = "You can now pull blocks. Push yourself against a block and hold DOWN, then move left or right to pull a block.";
         game.snail.changeLichenAmount(-1);
         game.addPowerup(x, y, "pull", location, description);
     }
@@ -180,12 +180,44 @@ var lookAheadTrees = [
     ], false),
     new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time... (God I'm hungry)", [
         new DialogueOption("Ok.", DIALOGUE_DONE)
+    ]),
+    new DialogueTree("Not being able to move is fine. It lets me focus on my surroundings for a very long time... (God I'm hungry)", [
+        new DialogueOption("Ok.", DIALOGUE_DONE),
+        new DialogueOption("Here, have some lichen.", new DialogueTree("Oh, that's wonderful. Here, I have something for you too. It let me hide when I was younger and I didn't feel like being noticed. I guess I don't have much use for it now that I'm older. Maybe you can find a use for it, or just appreciate the change in appearance.", [
+            new DialogueOption("Cool.", DIALOGUE_DONE)
+        ]))
+    ]),
+    new DialogueTree("Now that I'm full, my thoughts are much clearer.", [
+        new DialogueOption("That's nice.")
     ])
 ];
+
+lookAheadTrees[2].onFinish = function (game, character, selectedOption) {
+    if (selectedOption === "Cool.") {
+        var x = character.sprite.x - 100;
+        var y = character.sprite.y;
+        var location = [y / 50, x / 50];
+        var description = "You can now change colors for short times. Press H to blend in with your surroundings for 3 seconds. After using you will not be able to use again for 10 seconds.";
+        game.snail.changeLichenAmount(-1);
+        game.addPowerup(x, y, "hide", location, description);
+    }
+}
 
 var lookAheadDeciders = [
     DEFAULT_FIRST_DECIDER,
     function (game, owner, currentDialogue) {
+        if (game.snail.lichenCount > 0) {
+            return 2;
+        }
+        return 1;
+    },
+    function (game, owner, currentDialogue) {
+        if (game.snail.hiding.canHide) {
+            return 3;
+        }
+        if (game.snail.lichenCount > 0) {
+            return 2;
+        }
         return 1;
     },
     null

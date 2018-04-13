@@ -14,7 +14,7 @@ States.Intro = function (game) {
         "Some commotion caught Sim's attention. High above the tree the guard butterflies started shouting and bunching together into a tactical net. Yet a shadow blocking the morning sun could be seen through the flurry of wings.",
         "In an instant, tremendous talons emerged through the net, shredding several butterflies. A strange eagle, with coloring Sim had never seen before, was piercing toward the Wrapping Tree. Before Sim could scream, another much smaller talon grabbed them from behind and tore them from the tree.",
         "Droopl and Sim screamed each other's names as the sparrow carrying Sim flew higher and farther from the tree. Sim turned to see the eagle pursuing his attacker. The tiny sparrow, finally realizing what was happening, began flapping furiously and dove closer to the ground.",
-        "The eagle's shriek of victory was followed by the sparrow's yelp of death as the small bird's blood splattered across Sim's face. The sparrow's grip loosened, and Sim fell to the ground, father from home than they'd ever been before.",
+        "The eagle's shriek of victory was followed by the sparrow's yelp of death as the small bird's blood splattered across Sim's face. The sparrow's grip loosened, and Sim fell to the ground, farther from home than they'd ever been before.",
         "When Sim woke it was nighttime. Nothing looked familiar..."
     ];
 
