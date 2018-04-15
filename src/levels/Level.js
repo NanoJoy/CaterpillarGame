@@ -1,12 +1,13 @@
-function Level(layout, dialogue, redDragDirections, lampNames, musicName) {
+function Level(layout, dialogue, redDragDirections, lampNames, musicName, leafPointers) {
     this.layout = layout;
     this.dialogue = dialogue;
     this.redDragDirections = redDragDirections;
     this.lampNames = lampNames;
     this.musicName = musicName;
+    this.leafPointers = leafPointers;
 }
 
-LevelUtils = {
+var LevelUtils = {
     transformOldToNewLevel: function(newLevel, levelHeight) {
         if (levelHeight !== undefined) {
             var numSpans = newLevel.length / levelHeight;

@@ -283,3 +283,5 @@ levelOne.dialogue = [
 ];
 
 levelOne.redDragDirections = ["right", "left"];
+
+levelOne.leafPointers = [1];

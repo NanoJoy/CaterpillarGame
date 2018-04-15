@@ -40,7 +40,6 @@ function GameState(game) {
     var resultsDisp = null;
     var cameraBorder = null;
     var scarfHad = false;
-    var hasSavedInThisArea = false;
     var startTime = 0;
     var areaNumber = 0;
     var gravityLevel = 300;
@@ -388,8 +387,9 @@ function GameState(game) {
         var CHARGESPEED = 150;
         var state = deerStates.WALKING;
         var direction = directions.RIGHT;
-        var walkSound = game.add.audio("deer_walk", 1, true);
-        var runSound = game.add.audio("deer_run", 1, true);
+        //var walkSound = game.add.audio("deer_walk", 1, true);
+        //var runSound = game.add.audio("deer_run", 1, true);
+        var collidesWith = [groups.grounds, groups.locks, groups.blocks, groups.cleargrounds, groups.invisibles];
         this.sprite = groups.deers.create(x, y, key);
         game.physics.arcade.enable(this.sprite);
         this.sprite.animations.add('walk_left', [0, 1, 2, 3, 4], 5, true);
@@ -401,12 +401,12 @@ function GameState(game) {
 
         this.charge = function () {
             var sign = (snail.sprite.x > this.sprite.x) ? 1 : -1;
-            walkSound.stop();
-            if (!runSound.isPlaying && this.sprite.inCamera) {
-                runSound.play();
-            } else if (runSound.isPlaying && !this.sprite.inCamera) {
-                runSound.stop();
-            }
+            //walkSound.stop();
+            //if (!runSound.isPlaying && this.sprite.inCamera) {
+            //    runSound.play();
+            //} else if (runSound.isPlaying && !this.sprite.inCamera) {
+            //    runSound.stop();
+            //}
             if (state === deerStates.WALKING) {
                 state = deerStates.CHARGING;
                 this.sprite.body.velocity.x = CHARGESPEED * sign;
@@ -424,12 +424,12 @@ function GameState(game) {
 
         this.walk = function () {
             state = deerStates.WALKING;
-            runSound.stop();
-            if (!walkSound.isPlaying && this.sprite.inCamera) {
-                walkSound.play();
-            } else if (walkSound.isPlaying && !this.sprite.inCamera) {
-                walkSound.stop();
-            }
+            //runSound.stop();
+            //if (!walkSound.isPlaying && this.sprite.inCamera) {
+            //    walkSound.play();
+            //} else if (walkSound.isPlaying && !this.sprite.inCamera) {
+            //    walkSound.stop();
+            //}
             if (direction === directions.RIGHT && this.sprite.body.touching.right) {
                 direction = directions.LEFT;
                 this.sprite.body.velocity.x = WALKSPEED * -1;
@@ -466,7 +466,6 @@ function GameState(game) {
         };
 
         this.update = function () {
-            var collidesWith = [groups.grounds, groups.locks, groups.blocks, groups.cleargrounds, groups.invisibles];
             var newX = 0;
             var newY = 0;
             var lastDeathFrame = 13;
@@ -499,8 +498,8 @@ function GameState(game) {
                 case deerStates.DYING:
                     newX = this.sprite.x;
                     newY = this.sprite.y;
-                    runSound.destroy();
-                    walkSound.destroy();
+                    //runSound.destroy();
+                    //walkSound.destroy();
                     this.sprite.destroy();
                     this.sprite = groups.deers.create(newX, newY, 'deer_death');
                     if (direction === directions.RIGHT) {
@@ -1286,14 +1285,15 @@ function GameState(game) {
         this.update = function () {
             switch (state) {
                 case stinkbugStates.WALKING:
-                    if (!this.sprite.inCamera) {
-                        sound.volume = 0;
-                    } else {
-                        sound.volume = Math.min(50 / Math.sqrt(Math.pow(this.sprite.x - snail.sprite.x, 2) + Math.pow(this.sprite.y - snail.sprite.y, 2)), 1);
-                    }
                     for (var i = 0; i < collidesWith.length; i++) {
                         game.physics.arcade.collide(this.sprite, collidesWith[i]);
                     };
+                    if (!this.sprite.inCamera) {
+                        sound.volume = 0;
+                        return;
+                    } else {
+                        sound.volume = Math.min(50 / Math.sqrt(Math.pow(this.sprite.x - snail.sprite.x, 2) + Math.pow(this.sprite.y - snail.sprite.y, 2)), 1);
+                    }
                     game.physics.arcade.overlap(this.sprite, snail.sprite, function (stinkbugSprite, playerSprite) {
                         if (snail.sliding) {
                             state = stinkbugStates.DYING;
@@ -1628,7 +1628,7 @@ function GameState(game) {
                         break;
                     case 'l':
                         spriteKey = 'leaf';
-                        currentTile = new Leaf(game, j * 50 + 10, i * 50 + 11, spriteKey, map.leafPointers[areaNumber][leafCounter]);
+                        currentTile = new Leaf(game, fileMap, j * 50 + 10, i * 50 + 11, spriteKey, map.leafPointers[areaNumber][leafCounter]);
                         leafCounter += 1;
                         arrays.leaves.push(currentTile);
                         break;
@@ -1677,8 +1677,13 @@ function GameState(game) {
                 }
             }
         }
+        if (betweenLevelInfo !== null) {
+            snail.lichenCount = betweenLevelInfo.lichenCount;
+            snail.keysHad = betweenLevelInfo.keysHad;
+            snail.loadPowerups(betweenLevelInfo.powerups);
+        }        
         if (fromSave) {
-            if (hasSavedInThisArea) {
+            if (SaveData.areaNumber === areaNumber) {
                 snail.sprite.x = savePos.x;
                 snail.sprite.y = savePos.y;
             }
@@ -1838,20 +1843,12 @@ function GameState(game) {
     }
 
     this.create = function () {
-        var tellToPause = null;
-        var timer = null;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = gravityLevel;
         addKeys();
         pauseKey.inputEnabled = true;
         pauseKey.onUp.add(pauseKeyPressed);
         cursors.down.wasDown = false;
-        game.input.onDown.add(function () {
-            inputIsDown = true;
-        }, this);
-        game.input.onUp.add(function () {
-            inputIsDown = false;
-        }, this);
         muteKey.onDown.add(function () {
             game.sound.mute = !game.sound.mute;
         }, this);
@@ -1882,17 +1879,22 @@ function GameState(game) {
 
         game.world.sendToBack(background);
         map = JSON.parse(JSON.stringify(Snail.cleanMap));
-        fileMap = JSON.parse(JSON.stringify(SaveData.map));
+        if (betweenLevelInfo !== null) {
+            fileMap = JSON.parse(JSON.stringify(betweenLevelInfo.mapChanges));
+        } else {
+            fileMap = JSON.parse(JSON.stringify(SaveData.map));
+        }
+        if (betweenLevelInfo !== null || !SaveData.newGame) {
+            for (var i = 0; i < fileMap.length; i++) {
+                map.layouts[fileMap[i].a][fileMap[i].y][fileMap[i].x] = 'o';
+            }
+        }
         startTime = (new Date()).getTime();
         dummyText = game.add.text(0, 0, "hi", Snail.textStyles.boingbox);
         if (!SaveData.newGame) {
             fromSave = true;
             var saveAreaInfo = SaveData.lampName.split(".");
             var lastSavedAreaNum = parseInt(saveAreaInfo[0], 10) - 1;
-            hasSavedInThisArea = lastSavedAreaNum === Snail.areaNumber;
-            for (var i = 0; i < fileMap.length; i++) {
-                map.layouts[fileMap[i].a][fileMap[i].y][fileMap[i].x] = 'o';
-            }
             Snail.dialogues[areaNumber].forEach(function (it) {
                 var savedDialogueNumber = SaveData.dialogueStates[it.name];
                 if (savedDialogueNumber === undefined) {
@@ -1902,14 +1904,25 @@ function GameState(game) {
                 }
             });
         }
-        areaNumber = Snail.areaNumber;
+        areaNumber = SaveData.areaNumber === -1 ? 0 : SaveData.areaNumber;
+        if (Snail.areaNumber !== -1) {
+            areaNumber = Snail.areaNumber;
+            Snail.areaNumber = -1;
+        }
         if (SaveData.powerups.indexOf("scarf") > -1) {
             scarfHad = true;
         }
         game.sound.destroy();
         setUpLevel(map.layouts[areaNumber]);
-        keyCounters.yellow = new CountDisplay(game, 10, 10, "yellow_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("yellow")] || 0);
-        keyCounters.blue = new CountDisplay(game, 50, 10, "blue_key_icon", SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("blue")] || 0);
+        var yellowKeyCount = SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("yellow")] || 0;
+        var blueKeyCount = SaveData.keysHad.counts[SaveData.keysHad.colors.indexOf("blue")] || 0;
+        if (betweenLevelInfo !== null) {
+            yellowKeyCount = betweenLevelInfo.keysHad.counts[betweenLevelInfo.keysHad.colors.indexOf("yellow")] || 0;
+            blueKeyCount = betweenLevelInfo.keysHad.counts[betweenLevelInfo.keysHad.colors.indexOf("blue")] || 0;
+            betweenLevelInfo = null;
+        } 
+        keyCounters.yellow = new CountDisplay(game, 10, 10, "yellow_key_icon", yellowKeyCount);
+        keyCounters.blue = new CountDisplay(game, 50, 10, "blue_key_icon", blueKeyCount);
         keyCounters.lichen = new CountDisplay(game, 90, 10, spriteKeys.lichenIcon, SaveData.lichenCount);
         arrays.lichens.forEach(function (lichen) { lichen.counter = keyCounters.lichen; });
         if (SaveData.powerups.indexOf("shoot") > -1) {

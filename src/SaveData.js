@@ -12,3 +12,12 @@ var SaveData = {
     lichenCount: 0,
     powerups: []
 };
+
+var betweenLevelInfo = null;
+
+function BetweenLevelInfo(mapChanges, keysHad, lichenCount, powerups) {
+    this.mapChanges = mapChanges;
+    this.keysHad = keysHad;
+    this.lichenCount = lichenCount;
+    this.powerups = powerups;
+}

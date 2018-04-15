@@ -179,6 +179,7 @@ function Initialize() {
                 // ],
                 levelOne.layout,
                 levelTwo.layout,
+                levelThree.layout,
                 [//1
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
@@ -418,8 +419,9 @@ function Initialize() {
                 ]
             ],
             leafPointers: [
-                [1],
-                [2],
+                levelOne.leafPointers,
+                levelTwo.leafPointers,
+                levelThree.leafPointers,
                 [3, 4, 2],
                 [2],
                 [5],
@@ -434,10 +436,10 @@ function Initialize() {
                 [14],
                 [15]
             ],
-            musics: [levelOne.musicName, null, "game_music_2", null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
-            lampNames: [levelOne.lampNames, levelTwo.lampNames, null, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
+            musics: [levelOne.musicName, null, null, null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
+            lampNames: [levelOne.lampNames, levelTwo.lampNames, levelThree.lampNames, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
             powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-            redDragDirections: [levelOne.redDragDirections, levelTwo.redDragDirections]
+            redDragDirections: [levelOne.redDragDirections, levelTwo.redDragDirections, levelThree.redDragDirections]
         }
     }
 };

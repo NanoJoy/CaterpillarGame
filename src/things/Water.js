@@ -65,7 +65,9 @@ function Water(game, x, y, levelLayout) {
             if (!block.water.inWater) {
                 block.water.inWater = true;
                 block.water.entrySpeed = block.sprite.body.velocity.y;
-                game.sound.play("water", block.water.entrySpeed / 300);
+                if (block.sprite.inCamera) {
+                    game.sound.play("water", block.water.entrySpeed / 300);
+                }
             }
             block.sprite.body.velocity.y -= ACCELERATION;
             block.sprite.body.velocity.y += DRAG * block.sprite.body.velocity.y;

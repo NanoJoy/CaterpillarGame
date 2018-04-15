@@ -1,4 +1,4 @@
-function Leaf(game, x, y, key, pointer) {
+function Leaf(game, mapChanges, x, y, key, pointer) {
     this.sprite = game.groups.leaves.create(x, y, key);
     game.physics.arcade.enable(this.sprite);
     this.sprite.animations.add('shine', Snail.makeAnimationArray(0, 9, false));
@@ -21,6 +21,7 @@ function Leaf(game, x, y, key, pointer) {
                 game.snail.sprite.scale.setTo(-1, 1);
             }
             cocAnim.onComplete.addOnce(function () {
+                betweenLevelInfo = new BetweenLevelInfo(mapChanges, game.snail.keysHad, game.snail.lichenCount, game.snail.powerups);
                 Snail.areaNumber = this.pointer;
                 if (Snail.loadedMusics.indexOf(Snail.cleanMap.musics[Snail.areaNumber]) === -1) {
                     game.state.start("Midload");
