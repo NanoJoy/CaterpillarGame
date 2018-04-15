@@ -5,46 +5,51 @@ function DialogueController(name, trees, deciders) {
     this.currentDialogue = 0;
     this.gameObject = null;
     this.firstTime = true;
-}
-DialogueController.prototype.peekNextNum = function (game) {
-    if (this.firstTime) {
-        return this.deciders[0].apply(null, [game, this.gameObject, this.currentDialogue]);
-    }
-    if (this.deciders[this.currentDialogue + 1] !== null) {
-        return this.deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
-    }
-    return null;
-};
 
-DialogueController.prototype.peekNextTree = function (game) {
-    return this.trees[this.peekNextNum(game)];
-}
+    this.peekNextNum = function (game) {
+        if (this.firstTime) {
+            return this.deciders[0].apply(null, [game, this.gameObject, this.currentDialogue]);
+        }
+        if (this.deciders[this.currentDialogue + 1] !== null) {
+            return this.deciders[this.currentDialogue + 1].apply(null, [game, this.gameObject, this.currentDialogue]);
+        }
+        return null;
+    };
 
-DialogueController.prototype.nextIsForced = function (game) {
-    var nextNum = this.peekNextNum(game);
-    return nextNum !== null && this.trees[nextNum].force;
-}
-DialogueController.prototype.getNextDialogue = function (game) {
-    var nextNum = this.peekNextNum(game);
-    if (this.firstTime) {
+    this.peekNextTree = function (game) {
+        return this.trees[this.peekNextNum(game)];
+    };
+
+    this.nextIsForced = function (game) {
+        var nextNum = this.peekNextNum(game);
+        return nextNum !== null && this.trees[nextNum].force;
+    };
+
+    this.getNextDialogue = function (game) {
+        var nextNum = this.peekNextNum(game);
+        if (this.firstTime) {
+            this.firstTime = false;
+        }
+        if (nextNum != null) {
+            this.currentDialogue = nextNum;
+        }
+        return this.trees[this.currentDialogue];
+    };
+
+    this.reset = function () {
+        this.firstTime = true;
+        this.currentDialogue = 0;
+    };
+
+    this.setTo = function (num) {
         this.firstTime = false;
-    }
-    if (nextNum != null) {
-        this.currentDialogue = nextNum;
-    }
-    return this.trees[this.currentDialogue];
-};
-DialogueController.prototype.reset = function () {
-    this.firstTime = true;
-    this.currentDialogue = 0;
-};
-DialogueController.prototype.setTo = function (num) {
-    this.firstTime = false;
-    this.currentDialogue = num;
-};
-DialogueController.prototype.callOnFinish = function (game, selectedOption) {
-    this.trees[this.currentDialogue].onFinish.apply(null, [game, this.gameObject, selectedOption]);
-};
+        this.currentDialogue = num;
+    };
+
+    this.callOnFinish = function (game, selectedOption) {
+        this.trees[this.currentDialogue].onFinish.apply(null, [game, this.gameObject, selectedOption]);
+    };
+}
 
 function DialogueTree(prompt, options, force) {
     this.prompt = prompt;

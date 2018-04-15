@@ -120,8 +120,8 @@ function Initialize() {
         },
         dialogues: [
                 levelOne.dialogue,
-                ["firstBoingbug"],
-                ["blockExplainer"],
+                levelTwo.dialogue,
+                levelThree.dialogue,
                 [],
                 ["spazzy", "stinkbugs"],
                 ["saves", "killStinkbug"],

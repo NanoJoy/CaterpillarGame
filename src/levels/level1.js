@@ -28,7 +28,7 @@ var jumpTree = new DialogueTree("Thank you. I don't know if you can jump. If you
     new DialogueOption("Ok", DIALOGUE_DONE)
 ]);
 
-var whatHappenedToBoingbugTree = new DialogueTree("Two days ago this low vibration started in Fluttertown. You probably can't hear it, but it seems " +
+var whatHappenedToBoingbugTree = new DialogueTree("Two days ago this low vibration started in FlutterTown. You probably can't hear it, but it seems " +
     "to have some physiological effect on Boingbugs. None of us can move! It's really a disaster. On top of that, our Stinkbugs have been driven mad by it and escaped. " +
     "My keys are upstairs. If you get them you can get out of here and explore.", [
         new DialogueOption("I'll see what I can do.", jumpTree),
@@ -270,7 +270,7 @@ var stuckDeciders = [
 ];
 
 var redDragTrees = [
-    new DialogueTree("RedDrags are gentle beasts. They will carry you as far as you like in one direction. Just use UP and DOWN to control them. And this is very important: press D if you want them to drop you. Also, if they hit a wall face first they will probably get scared and fly away.", [
+    new DialogueTree("RedDrags are simple, but strong bugs. They will carry you as far as you like in one direction. Just use UP and DOWN to control them. And this is very important: press D if you want them to drop you. Also, if they hit a wall face first they will probably get scared and fly away.", [
         new DialogueOption("Thanks for the info.", DIALOGUE_DONE)
     ])
 ];
