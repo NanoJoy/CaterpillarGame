@@ -16,7 +16,7 @@ levelOne.layout = LevelUtils.transformOldToNewLevel([
     "ggggggggg        gt          zzzzzzggggggzzzggg   @    gg     g",
     "ggggggggg        gggzzzzzzzzzg                    g      i b  g",
     "gggggggggj   gggggg      gg   t b         f      jggggggggggggg",
-    "gggggggggg   t ! @i   s  i@   ggg   s    gggb    is s s ss il g",
+    "gggggggggg   t   @i   s  i@   ggg   s    gggb !  is s s ss iltg",
     "gggggggggggggggggggggggggggggggggzzzzzzzzgggggggggggggggggggggg"
 ]);
 
@@ -275,11 +275,18 @@ var redDragTrees = [
     ])
 ];
 
+var doorTrees = [
+    new DialogueTree("Press DOWN to enter a door. Doors are one way, but some doors may lead to areas you've already visited.", [
+        new DialogueOption("Thanks for the info", DIALOGUE_DONE)
+    ])
+]
+
 levelOne.dialogue = [
     new DialogueController("redDrags", redDragTrees, [DEFAULT_FIRST_DECIDER, null]),
     new DialogueController("stuck", stuckTrees, stuckDeciders),
     new DialogueController("lookAhead", lookAheadTrees, lookAheadDeciders),
-    new DialogueController("firstBoingbug", levelOneTrees, levelOneDeciders)
+    new DialogueController("firstBoingbug", levelOneTrees, levelOneDeciders),
+    new DialogueController("doors", doorTrees, [DEFAULT_FIRST_DECIDER, null])    
 ];
 
 levelOne.redDragDirections = ["right", "left"];

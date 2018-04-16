@@ -2,8 +2,10 @@ var States = window.States || {};
 var Snail = window.Snail || Initialize();
 var spriteKeys = {
     airDeath: "banana",
+    enteringDoor: "entering_door",
     flowerLamp: "flower_lamp",
     groundDeath: "caterpillar_death",
+    leaf: "leaf",
     lichen: "lichens",
     lichenIcon: "lichen_icon",
     powerSeed: "powerup",
@@ -112,6 +114,9 @@ States.Preloader = function(game) {
             width: 50,
             height: 50
         }, {
+            key: spriteKeys.enteringDoor,
+            width: 52, height: 30
+        }, {
             key: 'flower_bullet',
             width: 8,
             height: 12
@@ -204,9 +209,9 @@ States.Preloader = function(game) {
             width: 52,
             height: 50
         }, {
-            key: 'leaf',
-            width: 20,
-            height: 22
+            key: spriteKeys.leaf,
+            width: 40,
+            height: 50
         }, {
             key: spriteKeys.lichen,
             width: 50,

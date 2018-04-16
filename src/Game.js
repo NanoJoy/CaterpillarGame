@@ -1290,7 +1290,6 @@ function GameState(game) {
                     };
                     if (!this.sprite.inCamera) {
                         sound.volume = 0;
-                        return;
                     } else {
                         sound.volume = Math.min(50 / Math.sqrt(Math.pow(this.sprite.x - snail.sprite.x, 2) + Math.pow(this.sprite.y - snail.sprite.y, 2)), 1);
                     }
@@ -1627,8 +1626,8 @@ function GameState(game) {
                         arrays.lichens.push(currentTile);
                         break;
                     case 'l':
-                        spriteKey = 'leaf';
-                        currentTile = new Leaf(game, fileMap, j * 50 + 10, i * 50 + 11, spriteKey, map.leafPointers[areaNumber][leafCounter]);
+                        spriteKey = spriteKeys.leaf;
+                        currentTile = new Leaf(game, fileMap, j, i, spriteKey, map.leafPointers[areaNumber][leafCounter]);
                         leafCounter += 1;
                         arrays.leaves.push(currentTile);
                         break;
