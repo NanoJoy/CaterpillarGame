@@ -9,10 +9,10 @@ function getLevelThree() {
         "ggg                                             gggggggggggg                      gggg                  ggggggg   gg 2               ggggggggggggg",
         "ggg                            r                  gggggg                             @           }}}}}}}   g       ggggwwg d  b@     i s s i  gggg",
         "g                                  g    b                             zzzzzzzz       @           g         @    d  ggggwwgggggggggg>gggggggg  gggg",
-        "gl   !  i    3 }}}}}     zzzzzzzzzzggggggggggg s s s s i       zzzzzzzggggggggzzzzzzzg           g   b  gggggggggggggggwwggl   @              gggg",
+        "gl   !  f    3 }}}}}     zzzzzzzzzzggggggggggg s s s s i       zzzzzzzggggggggzzzzzzzg           g   b  gggggggggggggggwwggl   @              gggg",
         "gggggggggg}}}}}2i  s   ij    3ggggggggggggggggggggggggggzzzzzzzgggggggggggggggggggggggggggggggggggwwwwww              gww gggggggggg             g",
         "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggwwwwww                  ggggggt2 i      d      g",
-        "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg   f    i d     #       gggggggggggggggggggggggg",
+        "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg        i d     #       gggggggggggggggggggggggg",
         "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggzzzzggggggggggggggggggggggggggg"
     ]);
 
