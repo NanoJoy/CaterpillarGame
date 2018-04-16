@@ -1,4 +1,9 @@
 function Initialize() {
+    var levelOne = getLevelOne();
+    var levelTwo = getLevelTwo();
+    var levelThree = getLevelThree();
+    var levelFour = getLevelFour();
+    console.log(levelFour);
     return {
         GAME_WIDTH: 800,
         GAME_HEIGHT: 450,
@@ -119,24 +124,24 @@ function Initialize() {
             }
         },
         dialogues: [
-                levelOne.dialogue,
-                levelTwo.dialogue,
-                levelThree.dialogue,
-                [],
-                ["spazzy", "stinkbugs"],
-                ["saves", "killStinkbug"],
-                ["behindDoor"],
-                ["orb"],
-                ["deer"],
-                ["placeholder"],
-                [],
-                [],
-                [],
-                [],
-                ['none', 'none', 'none', 'none', 'none'],
-                ['none', 'none', 'none', 'none', 'none'],
-                ['none', 'none', 'none', 'none', 'none']
-            ],
+            levelOne.dialogue,
+            levelTwo.dialogue,
+            levelThree.dialogue,
+            levelFour.dialogue,
+            ["spazzy", "stinkbugs"],
+            ["saves", "killStinkbug"],
+            ["behindDoor"],
+            ["orb"],
+            ["deer"],
+            ["placeholder"],
+            [],
+            [],
+            [],
+            [],
+            ['none', 'none', 'none', 'none', 'none'],
+            ['none', 'none', 'none', 'none', 'none'],
+            ['none', 'none', 'none', 'none', 'none']
+        ],
         cleanMap: {
             layouts: [
                 // [
@@ -180,6 +185,7 @@ function Initialize() {
                 levelOne.layout,
                 levelTwo.layout,
                 levelThree.layout,
+                levelFour.layout,
                 [//1
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
                     ['g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g'],
@@ -422,6 +428,7 @@ function Initialize() {
                 levelOne.leafPointers,
                 levelTwo.leafPointers,
                 levelThree.leafPointers,
+                levelFour.leafPointers,
                 [3, 4, 2],
                 [2],
                 [5],
@@ -437,9 +444,9 @@ function Initialize() {
                 [15]
             ],
             musics: [levelOne.musicName, null, null, null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
-            lampNames: [levelOne.lampNames, levelTwo.lampNames, levelThree.lampNames, null, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
+            lampNames: [levelOne.lampNames, levelTwo.lampNames, levelThree.lampNames, levelFour.lampNames, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
             powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
-            redDragDirections: [levelOne.redDragDirections, levelTwo.redDragDirections, levelThree.redDragDirections]
+            redDragDirections: [levelOne.redDragDirections, levelTwo.redDragDirections, levelThree.redDragDirections, levelFour.redDragDirections]
         }
     }
 };

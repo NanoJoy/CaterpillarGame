@@ -815,11 +815,11 @@ function GameState(game) {
             keyCounters.lichen.changeAmount(amount);
         };
         this.redDragUpdate = function() {
-            const MAX_SPEED_X = 300;
-            const MAX_SPEED_Y = 150;
-            const INCREMENT_X = 5;
-            const INCREMENT_Y = 10;
-            const SIGN_X = this.curRedDrag.direction === "right" ? 1 : -1;
+            var MAX_SPEED_X = 300;
+            var MAX_SPEED_Y = 150;
+            var INCREMENT_X = 5;
+            var INCREMENT_Y = 10;
+            var SIGN_X = this.curRedDrag.direction === "right" ? 1 : -1;
             if (this.shooting.canShoot && shootKey.isDown && !this.shooting.wasDown) {
                 this.shoot();
             }
