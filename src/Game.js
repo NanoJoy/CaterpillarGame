@@ -118,11 +118,13 @@ function GameState(game) {
         this.sprite.body.gravity = gravityLevel * -1;
         var exists = true;
         this.playerTouch = function (playerSprite, ammoSprite) {
-            snail.shooting.ammo += 1;
-            keyCounters.ammo.increase();
-            ammoSprite.destroy();
-            exists = false;
-            game.sound.play("ammo");
+            if (snail.shooting.canShoot) {
+                snail.shooting.ammo += 1;
+                keyCounters.ammo.increase();
+                ammoSprite.destroy();
+                exists = false;
+                game.sound.play("ammo");
+            }
         };
     }
 
@@ -1632,8 +1634,8 @@ function GameState(game) {
                         arrays.leaves.push(currentTile);
                         break;
                     case 'p':
-                        currentTile = new PowerSeed(game, j * 50, i * 50, map.powerupNames[areaNumber][powerupCounter],
-                             [i, j], powerupCounter, keyCounters, map, areaNumber, fileMap);
+                        game.addPowerup(j * 50, i * 50, map.powerupNames[areaNumber][powerupCounter], [i, j],
+                             powerSeedDescriptions[map.powerupNames[areaNumber][powerupCounter]]);
                         powerupCounter++;
                         arrays.powerups.push(currentTile);
                         break;
@@ -1925,7 +1927,7 @@ function GameState(game) {
         keyCounters.lichen = new CountDisplay(game, 90, 10, spriteKeys.lichenIcon, SaveData.lichenCount);
         arrays.lichens.forEach(function (lichen) { lichen.counter = keyCounters.lichen; });
         if (SaveData.powerups.indexOf("shoot") > -1) {
-            keyCounters.ammo = new CountDisplay(game, 90, 10, "flower_bullet", SaveData.ammo || 0);
+            keyCounters.ammo = new CountDisplay(game, 130, 10, "flower_bullet", SaveData.ammo || 0);
         }
         game.sound.play(Snail.cleanMap.musics[areaNumber], 0.7, true);
     };

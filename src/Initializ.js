@@ -104,6 +104,7 @@ function Initialize() {
             };
         },
         removeFromLevel: function (map, areaNumber, thing, fileMap) {
+            console.log(thing);
             map.layouts[areaNumber][thing.location[0]][thing.location[1]] = ' ';
             fileMap.push({
                 a: areaNumber,
@@ -445,7 +446,7 @@ function Initialize() {
             ],
             musics: [levelOne.musicName, null, null, null, "game_music", null, null, "epic_music", null, null, "game_music", null, null, "epic_music", null],
             lampNames: [levelOne.lampNames, levelTwo.lampNames, levelThree.lampNames, levelFour.lampNames, 'Just inside', null, null, 'Spiking it up', 'Deer city', 'High and dry', 'Taking a bath', null, 'the worm', null, 'sdfasdf'],
-            powerupNames: [['shoot'], null, null, null, null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
+            powerupNames: [null, null, null, ["shoot"], null, null, ['hide'], null, null, ['shoot'], null, ['shoot'], null, ['shoot', 'hide']],
             redDragDirections: [levelOne.redDragDirections, levelTwo.redDragDirections, levelThree.redDragDirections, levelFour.redDragDirections]
         }
     }

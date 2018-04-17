@@ -20,7 +20,9 @@ function PowerSeed(game, x, y, name, location, description, keyCounters, map, ar
                         break;
                     case 'shoot':
                         game.snail.shooting.canShoot = true;
-                        keyCounters.ammo = new CountDisplay(game, 90, 10, "flower_bullet", 0);
+                        if (!keyCounters.ammo) {
+                            keyCounters.ammo = new CountDisplay(game, 130, 10, "flower_bullet", 0);
+                        }
                         break;
                     case "pull":
                         game.snail.canPull = true;
@@ -40,4 +42,8 @@ function PowerSeed(game, x, y, name, location, description, keyCounters, map, ar
         this.boxDone = function (a) {
         };
     };
+}
+
+var powerSeedDescriptions = {
+    shoot: "You can now shoot out tiny flowers by pressing Q. Ammunition must be collected."
 }
