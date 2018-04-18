@@ -1,7 +1,7 @@
 function getLevelThree() {
     var levelThree = new Level();
 
-    levelThree.lampNames = LevelUtils.createLampNames(3, 1);
+    levelThree.lampNames = LevelUtils.createLampNames(3, 2);
 
     levelThree.layout = LevelUtils.transformOldToNewLevel([
         "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
@@ -9,16 +9,23 @@ function getLevelThree() {
         "ggg                                             gggggggggggg                      gggg                  ggggggg   gg 2               ggggggggggggg",
         "ggg                            r                  gggggg                             @           }}}}}}}   g       ggggwwg d  b@     i s s i  gggg",
         "g                                  g    b                             zzzzzzzz       @           g         @    d  ggggwwgggggggggg>gggggggg  gggg",
-        "gl   !  f    3 }}}}}     zzzzzzzzzzggggggggggg s s s s i       zzzzzzzggggggggzzzzzzzg           g   b  gggggggggggggggwwggl   @              gggg",
+        "gl t !  f    3 }}}}}     zzzzzzzzzzggggggggggg s s s s i       zzzzzzzggggggggzzzzzzzg    f     jg   b  gggggggggggggggwwggl   @              gggg",
         "gggggggggg}}}}}2i  s   ij    3ggggggggggggggggggggggggggzzzzzzzgggggggggggggggggggggggggggggggggggwwwwww              gww gggggggggg             g",
         "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggwwwwww                  ggggggt2 i      d      g",
         "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg        i d     #       gggggggggggggggggggggggg",
         "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggzzzzggggggggggggggggggggggggggg"
     ]);
 
+    var boostTrees = [
+        new DialogueTree("Have you noticed that it's possible to go backwards against a SpeedBoost if you just keep jumping? It can be useful a lot of the time.", [
+            new DialogueOption("I will cherish this knowledge.", DIALOGUE_DONE),
+            new DialogueOption("Yes, everyone knows that, doofus.", DIALOGUE_DONE)
+        ])
+    ];
+
     var hideTree = new DialogueTree("If you have a way to camouflage yourself (If you can it's by pressing H) then it should be easy. Otherwise maybe you can just push for a long time. Now I think I want to go back to crying.", [
         new DialogueOption("Okay. Bye.", DIALOGUE_DONE)
-    ])
+    ]);
 
     var flowerTree = new DialogueTree("You're right, it's likely they will be, but I still don't completely trust flowers. Have you noticed that after you are revived, some things go back to how they were when you saved, but other things go back to how they were when you first saw them?", [
         new DialogueOption("Yes, I have noticed that.", new DialogueTree("You must be very observant.", [
@@ -27,7 +34,7 @@ function getLevelThree() {
         new DialogueOption("No, I haven't noticed that.", new DialogueTree("I notice these things, but nobody seems to care.", [
             new DialogueOption("Uh, how do I get out of here?", hideTree)
         ]))
-    ])
+    ]);
 
     var adviceTrees = [
         new DialogueTree("*Sob* Oh noo... Oh no.. *Sob*", [
@@ -56,6 +63,9 @@ function getLevelThree() {
 
     levelThree.redDragDirections = [RedDragDirections.RIGHT];
     levelThree.leafPointers = [1, 3];
-    levelThree.dialogue = [new DialogueController("crying", adviceTrees, adviceDeciders)];
+    levelThree.dialogue = [
+        new DialogueController("backwards", boostTrees, [DEFAULT_FIRST_DECIDER, null]),
+        new DialogueController("crying", adviceTrees, adviceDeciders)
+    ];
     return levelThree;
 }

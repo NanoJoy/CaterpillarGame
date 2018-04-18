@@ -149,13 +149,13 @@ function getLevelOne() {
             return numKeys === 2 ? currentDialogue + 1 : currentDialogue;
         },
         function (game, owner, currentDialogue) {
-            if (game.snail.lichenCount === 2) {
+            if (game.snail.lichenCount > 0) {
                 return currentDialogue + 2;
             }
             return currentDialogue + 1;
         },
         function (game, owner, currentDialogue) {
-            if (game.snail.lichenCount === 2) {
+            if (game.snail.lichenCount > 0) {
                 return currentDialogue + 1;
             }
             return currentDialogue;
