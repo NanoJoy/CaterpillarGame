@@ -43,6 +43,8 @@ function GameState(game) {
     var startTime = 0;
     var areaNumber = 0;
     var gravityLevel = 300;
+    var savesHelper = new SavesHelper();
+    var hasBeatenPart = false;
     game.gravityLevel = gravityLevel;
     var groups = {
         ammos: null,
@@ -644,8 +646,8 @@ function GameState(game) {
         this.sprite.animations.add('idle_left', Snail.makeAnimationArray(34, 37, false), 3, true);
         this.sprite.animations.add("fly_right" [0, 1], 8, true);
         this.sprite.animations.add("fly_left" [6, 7], 8, true);
-        this.sprite.animations.add("slide_right", [38, 39], 5, true);
-        this.sprite.animations.add("slide_left", [40, 41], 5, true);
+        //this.sprite.animations.add("slide_right", [38, 39], 5, true);
+        //this.sprite.animations.add("slide_left", [40, 41], 5, true);
         this.sprite.animations.play('idle_right');
         this.sprite.inputEnabled = true;
         this.keysHad = JSON.parse(JSON.stringify(SaveData.keysHad));
@@ -1072,9 +1074,6 @@ function GameState(game) {
         };
         this.getHurt = function (amount) {
             var timer = game.time.create();
-            if (scarfHad) {
-                amount /= 2;
-            }
             this.health -= amount;
             if (this.health > 0) {
                 game.sound.play("hurt");
@@ -1507,7 +1506,7 @@ function GameState(game) {
                 spriteKey = null;
                 switch (levelLayout[i][j].toLowerCase()) {
                     case '!':
-                        spriteKey = (SaveData.powerups.indexOf("scarf") > -1) ? "cat_scarf" : "caterpillar";
+                        spriteKey = hasBeatenPart ? spriteKeys.caterpillarScarf : "caterpillar";
                         snail = new Player(j * 50, i * 50, spriteKey);
                         game.snail = snail;
                         snail.loadPowerups(SaveData.powerups);
@@ -1844,6 +1843,7 @@ function GameState(game) {
     }
 
     this.create = function () {
+        hasBeatenPart = savesHelper.retrievePartEndData() !== null;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = gravityLevel;
         addKeys();

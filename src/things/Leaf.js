@@ -13,6 +13,11 @@ function Leaf(game, mapChanges, x, y, key, pointer) {
             game.snail.sprite.play("make", 4, false);
             game.add.tween(game.snail.sprite).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
             cocAnim.onComplete.addOnce(function () {
+                console.log(this.pointer);
+                if (this.pointer === 1000) {
+                    game.state.start("PartEnd");
+                    return;
+                }
                 betweenLevelInfo = new BetweenLevelInfo(mapChanges, game.snail.keysHad, game.snail.lichenCount, game.snail.powerups);
                 Snail.areaNumber = this.pointer;
                 if (Snail.loadedMusics.indexOf(Snail.cleanMap.musics[Snail.areaNumber]) === -1) {

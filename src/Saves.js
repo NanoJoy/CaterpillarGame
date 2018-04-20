@@ -8,6 +8,9 @@ var SaveState = function (game) {
     var loadGameButton = null;
     var selectedButton = null;
     var currentStorage = null;
+    var partEndData = null;
+    var hasBeatenPart = false;
+    var savesHelper = new SavesHelper();
     var file = {
         dialogueStates: {},
         areaNumber: -1,
@@ -18,7 +21,8 @@ var SaveState = function (game) {
         keysHad: {
             colors: [],
             counts: []
-        }
+        },
+        partsBeaten: 0
     };
     var keys = {
         up: null,
@@ -59,13 +63,16 @@ var SaveState = function (game) {
 
     function enterPressed() {
         if (currentStorage !== null && selectedButton !== newGameButton) {
-            SaveData = JSON.parse(currentStorage);
+            SaveData = currentStorage;
         }
         Snail.areaNumber = SaveData.areaNumber;
         if (Snail.areaNumber === -1) {
             Snail.areaNumber = 0;
         }
         if (selectedButton === newGameButton) {
+            if (hasBeatenPart) {
+                SaveData.partsBeaten = 1;
+            }
             game.state.start("Intro");
         } else {
             game.state.start("Midload");
@@ -85,15 +92,20 @@ var SaveState = function (game) {
     }
 
     this.create = function () {
-        currentStorage = localStorage.getItem("SamIsAnIdiot");
+        currentStorage = savesHelper.retrieveRegularData();
+        partEndData = savesHelper.retrievePartEndData();
+        hasBeatenPart = partEndData !== null;
         background = game.add.tileSprite(0, 0, Snail.GAME_WIDTH, Snail.GAME_HEIGHT, "menu_background");
         background.tint = 0xc6c6c6;
         border = game.add.image(0, 0, "start_border");
         titleText = game.add.sprite(0, 50, "logo");
         titleText.x = (Snail.GAME_WIDTH - titleText.width) / 2;
-        newGameButton = new Button(300, 'New Game');
-        if (currentStorage !== null) {
-            loadGameButton = new Button(350, 'Continue');
+
+        var newGameString = hasBeatenPart ? "New Game with Scarf" : "New Game";
+        var continueString = hasBeatenPart ? "Continue with Scarf" : "Continue";
+        newGameButton = new Button(300, newGameString);
+        if (currentStorage !== null && (!hasBeatenPart || currentStorage.partsBeaten > 0)) {
+            loadGameButton = new Button(350, continueString);
             keys.up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
             keys.down = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
             keys.up.onDown.add(upOrDownPressed);

@@ -9,7 +9,7 @@ function getLevelFour() {
         "g   <<<          g    j                gggggggggg      gg",
         "g   ggg>>> d i   gggggggggg}}}}}}      gggggggggggggggggg",
         "g    3gggggggg    g    g a a a gg     pgggggggggggggg   g",
-        "gj    #s is2gg      d                          t  @@  l g",
+        "gj    #s is2gg      d                   2      t  @@  l g",
         "ggggggggggggggggggggggggggggggggg>>>>>>gggggggggggggggggg",
         "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
     ]);
@@ -35,7 +35,11 @@ function getLevelFour() {
         new DialogueTree("I am eternally grateful to you.", [
             new DialogueOption("It is my honor.", DIALOGUE_DONE),
             new DialogueOption("Leave me alone, weirdo.", DIALOGUE_DONE)
-        ], true)
+        ], true),
+        new DialogueTree("I am eternally grateful to you.", [
+            new DialogueOption("It is my honor.", DIALOGUE_DONE),
+            new DialogueOption("Leave me alone, weirdo.", DIALOGUE_DONE)
+        ], false)
     ];
 
     gateKeeperTrees[0].onFinish = function (game, character, selectedOption) {
@@ -55,29 +59,32 @@ function getLevelFour() {
 
     gateKeeperTrees[2].onFinish = function (game, character, selectedOption) {
         if (selectedOption === "Leave me alone, weirdo.") {
-            game.snail.sprite.x = 35 * 50;
+            game.snail.getHurt(3);
         }
     };
 
     function getNumberOfYellowKeys(game) {
-        return game.snail.areaKeys.counts[game.snail.areaKeys.colors.indexOf("yellow")];
+        return game.snail.keysHad.counts[game.snail.keysHad.colors.indexOf("yellow")];
     }
 
     var gateKeeperDeciders = [
         function (game, owner, currentDialogue) {
-            return getNumberOfYellowKeys(game) === 2 ? 2 : 0;
+            return getNumberOfYellowKeys(game) > 1 ? 2 : 0;
         },
         function (game, owner, currentDialogue) {
-            return getNumberOfYellowKeys(game) === 2 ? 2 : 1;
+            return getNumberOfYellowKeys(game) > 1 ? 2 : 1;
         },
         function (game, owner, currentDialogue) {
-            return getNumberOfYellowKeys(game) === 2 ? 2 : 1;
+            return getNumberOfYellowKeys(game) > 1 ? 2 : 1;
         },
         function (game, owner, currentDialogue) {
-            return 2;
+            return 3;
+        },
+        function (game, owner, currentDialogue) {
+            return 3;
         }
     ];
 
     var dialogues = [new DialogueController("gatekeeper", gateKeeperTrees, gateKeeperDeciders)];
-    return new Level(layout, dialogues, [], flowerNames, null, [0]);
+    return new Level(layout, dialogues, [], flowerNames, null, [1000]);
 }

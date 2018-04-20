@@ -2,6 +2,7 @@ var States = window.States || {};
 var Snail = window.Snail || Initialize();
 var spriteKeys = {
     airDeath: "banana",
+    caterpillarScarf: "cat_scarf",
     enteringDoor: "entering_door",
     flowerLamp: "flower_lamp",
     groundDeath: "caterpillar_death",
@@ -69,7 +70,7 @@ States.Preloader = function(game) {
             width: 20,
             height: 20
         }, {
-            key: "cat_scarf",
+            key: spriteKeys.caterpillarScarf,
             width: 52,
             height: 30
         }, {

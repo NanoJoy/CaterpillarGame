@@ -35,6 +35,7 @@
     <script src="src/Intro.js"></script>
     <script src="src/Saves.js"></script>
     <script src="src/Preloader.js"></script>
+    <script src="src/PartEnd.js"></script>
 
 </head>
 
@@ -46,13 +47,12 @@
         title.style = "font-family: VT323";
         title.innerHTML = "Caterpillar Game";
         document.getElementById("page").appendChild(title);
-        while (title.style.fontFamily !== "VT323") {}
         var game = new Phaser.Game(800, 450, Phaser.AUTO, 'game', null, false, false, null);
-        var states = ["Boot", "Midload", "Game", "Intro", "Saves", "Preloader"];
+        var states = ["Boot", "Midload", "Game", "Intro", "Saves", "Preloader", "PartEnd"];
         for (var i = 0; i < states.length; i++) {
             game.state.add(states[i], States[states[i]]);
         }
-        game.state.start('Boot');
+        game.state.start("Boot");
     </script>
 </body>
 

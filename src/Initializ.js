@@ -3,7 +3,6 @@ function Initialize() {
     var levelTwo = getLevelTwo();
     var levelThree = getLevelThree();
     var levelFour = getLevelFour();
-    console.log(levelFour);
     return {
         GAME_WIDTH: 800,
         GAME_HEIGHT: 450,
@@ -104,7 +103,6 @@ function Initialize() {
             };
         },
         removeFromLevel: function (map, areaNumber, thing, fileMap) {
-            console.log(thing);
             map.layouts[areaNumber][thing.location[0]][thing.location[1]] = ' ';
             fileMap.push({
                 a: areaNumber,
