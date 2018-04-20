@@ -9,7 +9,7 @@ function getLevelFour() {
         "g   <<<          g    j                gggggggggg      gg",
         "g   ggg>>> d i   gggggggggg}}}}}}      gggggggggggggggggg",
         "g    3gggggggg    g    g a a a gg     pgggggggggggggg   g",
-        "gj    #s is2gg      d                   2      t  @@  l g",
+        "gj    #s is2gg      d                          t  @@  l g",
         "ggggggggggggggggggggggggggggggggg>>>>>>gggggggggggggggggg",
         "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
     ]);
