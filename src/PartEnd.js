@@ -12,13 +12,16 @@ States.PartEnd = function (game) {
     }
 
     this.create = function () {
+        game.sound.destroy();
         SaveData.partsBeaten += 1;
         savesHelper.setPartEndData();
+        SaveData = savesHelper.getCleanSaveData();
+        savesHelper.setRegularData();
 
         game.stage.backgroundColor = 0x280051;
         scarfSprite = game.add.sprite(0, 0, spriteKeys.caterpillarScarf);
         Snail.centerThing(scarfSprite);
-        topText = game.add.text(0, 0, "End of Part 1" +
+        topText = game.add.text(0, 0, "End of Part 1\n" +
         "Coming soon: Caterpillar Game Part 2: Slime City\n", textStyle);
         Snail.centerThing(topText);
         topText.y = 50;
